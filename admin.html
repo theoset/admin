@@ -1,232 +1,946 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Handled Admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Handled · Admin Panel</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
-<style>
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#0e0f11;
-color:white;
-}
+    :root {
+      --bg: #0a0b0d; --surface: #111316; --surface2: #181a1e; --surface3: #1e2127;
+      --border: #252830; --accent: #f0c040; --accent2: #e07b30;
+      --text: #f0ece4; --muted: #6a6f7d;
+      --success: #4ade80; --danger: #f87171; --info: #60a5fa; --warn: #fb923c;
+      --radius: 12px; --radius-sm: 8px; --sidebar: 220px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; }
 
-.header{
-background:#16181c;
-padding:20px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-bottom:1px solid #333;
-}
+    /* ── LOGIN ── */
+    #login-screen {
+      display:flex; align-items:center; justify-content:center;
+      min-height:100vh; width:100%;
+      background:radial-gradient(ellipse 70% 50% at 50% 40%, #1a1000, var(--bg) 70%);
+    }
+    .login-box {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:38px 34px; width:100%; max-width:380px;
+    }
+    .login-logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); margin-bottom:5px; }
+    .login-sub  { font-size:.78rem; color:var(--muted); margin-bottom:26px; }
+    .lf-group   { margin-bottom:13px; }
+    .lf-group label { display:block; font-size:.74rem; color:var(--muted); margin-bottom:5px; font-weight:500; }
+    .lf-group input {
+      width:100%; background:var(--surface2); border:1px solid var(--border);
+      border-radius:var(--radius-sm); padding:10px 12px; color:var(--text);
+      font-size:.86rem; font-family:'DM Sans',sans-serif; transition:border .18s;
+    }
+    .lf-group input:focus { outline:none; border-color:var(--accent); }
+    .lf-group input::placeholder { color:var(--muted); }
+    .login-btn {
+      width:100%; padding:12px; background:var(--accent); border:none;
+      border-radius:var(--radius-sm); color:#0a0b0d; font-size:.9rem; font-weight:700;
+      cursor:pointer; font-family:'Syne',sans-serif; transition:all .18s; margin-top:4px;
+    }
+    .login-btn:hover { background:#ffd055; }
+    .login-err { color:var(--danger); font-size:.76rem; margin-top:9px; text-align:center; min-height:18px; }
 
-.logo{
-font-size:24px;
-font-weight:bold;
-color:#f0c040;
-}
+    /* ── SHELL ── */
+    #app { display:none; width:100%; min-height:100vh; }
 
-.container{
-padding:20px;
-}
+    /* SIDEBAR */
+    .sidebar {
+      width:var(--sidebar); background:var(--surface); border-right:1px solid var(--border);
+      display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100;
+    }
+    .sb-logo { padding:22px 20px 14px; border-bottom:1px solid var(--border); }
+    .sb-logo-name { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800; color:var(--accent); }
+    .sb-logo-tag  { font-size:.65rem; color:var(--muted); margin-top:2px; }
+    .sb-nav { flex:1; padding:12px 10px; overflow-y:auto; }
+    .sb-section { font-size:.62rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); padding:14px 10px 6px; }
+    .sb-link {
+      display:flex; align-items:center; gap:9px; padding:9px 11px;
+      border-radius:var(--radius-sm); font-size:.81rem; color:var(--muted);
+      cursor:pointer; transition:all .18s; margin-bottom:2px; border:none;
+      background:transparent; width:100%; text-align:left; font-family:'DM Sans',sans-serif;
+    }
+    .sb-link:hover { color:var(--text); background:var(--surface2); }
+    .sb-link.active { color:var(--accent); background:rgba(240,192,64,.09); }
+    .sb-link .si { font-size:.9rem; }
+    .sb-link .badge { margin-left:auto; background:var(--danger); color:#fff; padding:1px 6px; border-radius:99px; font-size:.62rem; font-weight:700; }
+    .sb-bottom { padding:14px 10px; border-top:1px solid var(--border); }
+    .sb-user { display:flex; align-items:center; gap:9px; padding:8px 11px; border-radius:var(--radius-sm); background:var(--surface2); }
+    .sb-avatar { width:30px; height:30px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:.8rem; font-weight:800; color:#0a0b0d; flex-shrink:0; }
+    .sb-user-name { font-size:.76rem; font-weight:500; }
+    .sb-user-role { font-size:.64rem; color:var(--muted); }
 
-.login-box{
-max-width:400px;
-margin:100px auto;
-background:#16181c;
-padding:30px;
-border-radius:12px;
-}
+    /* MAIN */
+    .main { margin-left:var(--sidebar); flex:1; min-height:100vh; display:flex; flex-direction:column; }
+    .topbar {
+      position:sticky; top:0; z-index:50;
+      background:rgba(10,11,13,.92); backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border); padding:0 30px;
+      display:flex; align-items:center; justify-content:space-between; height:58px;
+    }
+    .topbar-title { font-family:'Syne',sans-serif; font-size:1rem; font-weight:800; }
+    .topbar-actions { display:flex; align-items:center; gap:9px; }
+    .tb-btn {
+      padding:7px 14px; border-radius:var(--radius-sm); font-size:.78rem;
+      font-weight:500; cursor:pointer; border:none; transition:all .18s; font-family:'DM Sans',sans-serif;
+    }
+    .tb-btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
+    .tb-btn-ghost:hover { color:var(--text); border-color:var(--text); }
+    .tb-btn-danger { background:rgba(248,113,113,.12); color:var(--danger); border:1px solid rgba(248,113,113,.25); }
+    .tb-btn-danger:hover { background:rgba(248,113,113,.22); }
+    .content { flex:1; padding:28px 30px; overflow-y:auto; }
 
-input{
-width:100%;
-padding:12px;
-margin:10px 0;
-background:#222;
-border:none;
-color:white;
-border-radius:8px;
-}
+    /* PAGES */
+    .pg { display:none; animation:fadeIn .25s ease; }
+    .pg.active { display:block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; } }
 
-button{
-padding:12px 20px;
-background:#f0c040;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:bold;
-}
+    /* STAT CARDS */
+    .stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+    .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; }
+    .sc-label { font-size:.7rem; color:var(--muted); font-weight:500; margin-bottom:7px; text-transform:uppercase; letter-spacing:.06em; }
+    .sc-val   { font-family:'Syne',sans-serif; font-size:1.9rem; font-weight:800; }
+    .sc-sub   { font-size:.72rem; color:var(--muted); margin-top:4px; }
 
-.dashboard{
-display:none;
-}
+    /* TABLES */
+    .section-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; flex-wrap:wrap; gap:9px; }
+    .section-hd h3 { font-family:'Syne',sans-serif; font-size:.93rem; font-weight:800; }
+    .tbl-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    table { width:100%; border-collapse:collapse; }
+    thead tr { background:var(--surface2); }
+    th { padding:10px 14px; font-size:.69rem; font-weight:700; color:var(--muted); text-align:left; text-transform:uppercase; letter-spacing:.07em; border-bottom:1px solid var(--border); }
+    td { padding:11px 14px; font-size:.8rem; border-bottom:1px solid var(--border); vertical-align:middle; }
+    tr:last-child td { border-bottom:none; }
+    tbody tr { transition:background .15s; }
+    tbody tr:hover { background:rgba(255,255,255,.02); }
 
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;
-margin-top:20px;
-}
+    /* BADGE */
+    .badge { display:inline-flex; align-items:center; gap:3px; padding:3px 9px; border-radius:99px; font-size:.67rem; font-weight:700; }
+    .badge-pending  { background:rgba(240,192,64,.15); color:var(--accent); }
+    .badge-approved { background:rgba(74,222,128,.15); color:var(--success); }
+    .badge-rejected { background:rgba(248,113,113,.15); color:var(--danger); }
+    .badge-customer { background:rgba(96,165,250,.15); color:var(--info); }
+    .badge-worker   { background:rgba(251,146,60,.15); color:var(--warn); }
+    .badge-done     { background:rgba(74,222,128,.12); color:var(--success); border:1px solid rgba(74,222,128,.25); }
+    .badge-accepted { background:rgba(96,165,250,.12); color:var(--info); border:1px solid rgba(96,165,250,.25); }
+    .badge-progress { background:rgba(251,146,60,.12); color:var(--warn); border:1px solid rgba(251,146,60,.25); }
 
-.card{
-background:#16181c;
-padding:20px;
-border-radius:12px;
-}
+    /* ACTION BTNS */
+    .act-btn {
+      padding:4px 10px; border-radius:6px; font-size:.72rem; font-weight:600;
+      cursor:pointer; border:none; font-family:'DM Sans',sans-serif; transition:all .18s;
+    }
+    .act-approve { background:rgba(74,222,128,.15); color:var(--success); border:1px solid rgba(74,222,128,.3); }
+    .act-approve:hover { background:rgba(74,222,128,.28); }
+    .act-reject  { background:rgba(248,113,113,.12); color:var(--danger); border:1px solid rgba(248,113,113,.3); }
+    .act-reject:hover  { background:rgba(248,113,113,.22); }
+    .act-delete  { background:transparent; color:var(--muted); border:1px solid var(--border); }
+    .act-delete:hover  { color:var(--danger); border-color:rgba(248,113,113,.5); }
 
-.card h3{
-margin:0;
-color:#f0c040;
-}
+    /* CONNECT SETUP */
+    .connect-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:26px; margin-bottom:16px; }
+    .connect-card h3 { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:800; margin-bottom:5px; }
+    .connect-card p  { font-size:.82rem; color:var(--muted); line-height:1.7; margin-bottom:14px; }
+    .step-list { counter-reset:steps; list-style:none; display:flex; flex-direction:column; gap:10px; margin:14px 0; }
+    .step-list li { counter-increment:steps; display:flex; align-items:flex-start; gap:11px; font-size:.82rem; line-height:1.6; }
+    .step-list li::before { content:counter(steps); min-width:22px; height:22px; border-radius:50%; background:rgba(240,192,64,.15); border:1px solid rgba(240,192,64,.3); color:var(--accent); font-size:.7rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    .cg { margin-bottom:12px; }
+    .cg label { display:block; font-size:.74rem; color:var(--muted); margin-bottom:5px; font-weight:500; }
+    .cg input, .cg select {
+      width:100%; background:var(--surface2); border:1px solid var(--border);
+      border-radius:var(--radius-sm); padding:9px 12px; color:var(--text);
+      font-size:.84rem; font-family:'DM Sans',sans-serif; transition:border .18s;
+    }
+    .cg input:focus, .cg select:focus { outline:none; border-color:var(--accent); }
+    .cg input::placeholder { color:var(--muted); }
+    .cc-btn {
+      padding:9px 20px; border-radius:var(--radius-sm); font-size:.83rem; font-weight:600;
+      cursor:pointer; border:none; font-family:'Syne',sans-serif; transition:all .18s;
+    }
+    .cc-primary { background:var(--accent); color:#0a0b0d; }
+    .cc-primary:hover { background:#ffd055; }
+    .cc-ghost   { background:transparent; color:var(--muted); border:1px solid var(--border); }
+    .cc-ghost:hover { color:var(--text); border-color:var(--text); }
+    .cc-danger  { background:rgba(248,113,113,.12); color:var(--danger); border:1px solid rgba(248,113,113,.3); }
+    .cc-status  { padding:9px 14px; border-radius:var(--radius-sm); font-size:.78rem; margin-top:10px; display:none; }
+    .cc-status.ok  { background:rgba(74,222,128,.1); border:1px solid rgba(74,222,64,.25); color:var(--success); display:block; }
+    .cc-status.err { background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.25); color:var(--danger); display:block; }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
+    /* IMPORT/EXPORT */
+    .io-btn-row { display:flex; gap:9px; flex-wrap:wrap; margin-top:12px; }
+    .import-drop { border:2px dashed var(--border); border-radius:var(--radius-sm); padding:18px; text-align:center; cursor:pointer; transition:border .18s; }
+    .import-drop:hover { border-color:var(--accent); }
+    .import-drop p { font-size:.78rem; color:var(--muted); }
 
-th,td{
-padding:12px;
-border:1px solid #333;
-text-align:left;
-}
+    /* NOTIFY LOG */
+    .notif-list { display:flex; flex-direction:column; gap:8px; }
+    .notif-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 15px; display:flex; gap:12px; align-items:flex-start; }
+    .ni-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; margin-top:4px; }
+    .ni-title { font-size:.8rem; font-weight:600; }
+    .ni-msg   { font-size:.74rem; color:var(--muted); margin-top:2px; }
+    .ni-time  { font-size:.67rem; color:var(--muted); margin-left:auto; white-space:nowrap; }
 
-th{
-background:#222;
-}
-</style>
+    /* EMPTY */
+    .empty { text-align:center; padding:38px 18px; color:var(--muted); }
+    .empty .ei { font-size:1.8rem; margin-bottom:9px; }
+
+    /* TOAST */
+    #toast-box { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:7px; align-items:flex-end; }
+    .toast { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 15px; font-size:.83rem; display:flex; align-items:center; gap:8px; max-width:280px; animation:fadeIn .22s ease; }
+
+    /* DIVIDER */
+    .divider { height:1px; background:var(--border); margin:18px 0; }
+
+    /* MODAL */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:500; align-items:center; justify-content:center; padding:20px; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:28px; max-width:440px; width:100%; }
+    .modal-title { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:800; margin-bottom:5px; }
+    .modal-sub   { font-size:.8rem; color:var(--muted); margin-bottom:18px; }
+    .modal-btns  { display:flex; gap:9px; margin-top:18px; justify-content:flex-end; }
+
+    @media(max-width:720px){
+      .sidebar { display:none; }
+      .main { margin-left:0; }
+      .stat-grid { grid-template-columns:repeat(2,1fr); }
+    }
+  </style>
 </head>
 <body>
 
-<div class="header">
-<div class="logo">Handled Admin</div>
-<button onclick="logout()">Logout</button>
+<!-- ══ LOGIN ══════════════════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Handled</div>
+    <div class="login-sub">Admin Panel · Restricted Access</div>
+    <div class="lf-group">
+      <label>Admin Username</label>
+      <input type="text" id="l-user" placeholder="admin" autocomplete="username" />
+    </div>
+    <div class="lf-group">
+      <label>Password</label>
+      <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')doAdminLogin()" />
+    </div>
+    <button class="login-btn" onclick="doAdminLogin()">Login →</button>
+    <div class="login-err" id="login-err"></div>
+    <div style="margin-top:18px;padding:10px;background:rgba(240,192,64,.06);border:1px solid rgba(240,192,64,.15);border-radius:8px;font-size:.72rem;color:var(--muted)">
+      Default credentials: <strong style="color:var(--accent)">admin</strong> / <strong style="color:var(--accent)">handled2025</strong>
+      <br>Change these in the script before deploying.
+    </div>
+  </div>
 </div>
 
-<div id="loginPage" class="login-box">
-<h2>Admin Login</h2>
+<!-- ══ APP ════════════════════════════════════════════════════════════════════ -->
+<div id="app">
 
-<input type="password"
-id="adminPass"
-placeholder="Enter Admin Password">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-name">Handled</div>
+      <div class="sb-logo-tag">Admin Dashboard</div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Overview</div>
+      <button class="sb-link active" onclick="goPage('overview',this)"><span class="si">📊</span> Overview</button>
+      <button class="sb-link" onclick="goPage('activity',this)"><span class="si">🔔</span> Activity Log <span class="badge" id="sb-notif-badge"></span></button>
 
-<button onclick="login()">
-Login
-</button>
+      <div class="sb-section">Management</div>
+      <button class="sb-link" onclick="goPage('kyc',this)"><span class="si">🪪</span> KYC Review <span class="badge" id="sb-kyc-badge"></span></button>
+      <button class="sb-link" onclick="goPage('workers',this)"><span class="si">👷</span> Workers</button>
+      <button class="sb-link" onclick="goPage('customers',this)"><span class="si">🧑</span> Customers</button>
+      <button class="sb-link" onclick="goPage('tasks',this)"><span class="si">📋</span> Tasks</button>
+
+      <div class="sb-section">System</div>
+      <button class="sb-link" onclick="goPage('connect',this)"><span class="si">🔗</span> Connect Site</button>
+      <button class="sb-link" onclick="goPage('settings',this)"><span class="si">⚙️</span> Settings</button>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar">A</div>
+        <div>
+          <div class="sb-user-name" id="sb-username">Admin</div>
+          <div class="sb-user-role">Super Admin</div>
+        </div>
+      </div>
+      <button onclick="doAdminLogout()" style="margin-top:8px;width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--muted);cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;transition:all .18s" onmouseover="this.style.color='var(--danger)';this.style.borderColor='rgba(248,113,113,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Logout</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-actions">
+        <button class="tb-btn tb-btn-ghost" onclick="refreshData()">↻ Refresh</button>
+        <span id="sync-status" style="font-size:.72rem;color:var(--muted)">● Local</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── OVERVIEW ────────────────────────────────────────────────────── -->
+      <div class="pg active" id="pg-overview">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="sc-label">Total Workers</div><div class="sc-val" id="st-workers">0</div><div class="sc-sub" id="st-workers-v">0 verified</div></div>
+          <div class="stat-card"><div class="sc-label">Total Customers</div><div class="sc-val" id="st-customers">0</div><div class="sc-sub">Registered accounts</div></div>
+          <div class="stat-card"><div class="sc-label">Total Tasks</div><div class="sc-val" id="st-tasks">0</div><div class="sc-sub" id="st-tasks-p">0 pending</div></div>
+          <div class="stat-card"><div class="sc-label">KYC Pending</div><div class="sc-val" id="st-kyc" style="color:var(--accent)">0</div><div class="sc-sub">Awaiting review</div></div>
+        </div>
+
+        <!-- Recent Tasks -->
+        <div class="section-hd"><h3>Recent Tasks</h3><button class="tb-btn tb-btn-ghost" onclick="goPage('tasks',document.querySelector('[onclick*=tasks]'))">View All</button></div>
+        <div class="tbl-wrap" style="margin-bottom:24px">
+          <table>
+            <thead><tr><th>Service</th><th>Customer</th><th>Location</th><th>Price</th><th>Status</th><th>Posted</th></tr></thead>
+            <tbody id="ov-tasks-body"></tbody>
+          </table>
+        </div>
+
+        <!-- Recent Workers -->
+        <div class="section-hd"><h3>Recent Worker Registrations</h3><button class="tb-btn tb-btn-ghost" onclick="goPage('workers',document.querySelector('[onclick*=workers]'))">View All</button></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Services</th><th>KYC Status</th><th>Joined</th></tr></thead>
+            <tbody id="ov-workers-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── KYC REVIEW ─────────────────────────────────────────────────── -->
+      <div class="pg" id="pg-kyc">
+        <div class="section-hd"><h3>KYC Submissions Pending Review</h3></div>
+        <div id="kyc-list"></div>
+      </div>
+
+      <!-- ── WORKERS ────────────────────────────────────────────────────── -->
+      <div class="pg" id="pg-workers">
+        <div class="section-hd">
+          <h3>All Workers</h3>
+          <input type="search" placeholder="Search name / email…" oninput="renderWorkers(this.value)" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text);font-size:.8rem;font-family:'DM Sans',sans-serif;width:210px">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Location</th><th>Services</th><th>KYC</th><th>Jobs</th><th>Actions</th></tr></thead>
+            <tbody id="workers-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── CUSTOMERS ──────────────────────────────────────────────────── -->
+      <div class="pg" id="pg-customers">
+        <div class="section-hd">
+          <h3>All Customers</h3>
+          <input type="search" placeholder="Search name / email…" oninput="renderCustomers(this.value)" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text);font-size:.8rem;font-family:'DM Sans',sans-serif;width:210px">
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Tasks Posted</th><th>Actions</th></tr></thead>
+            <tbody id="customers-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── TASKS ──────────────────────────────────────────────────────── -->
+      <div class="pg" id="pg-tasks">
+        <div class="section-hd">
+          <h3>All Tasks</h3>
+          <select onchange="renderTasks(this.value)" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text);font-size:.8rem;font-family:'DM Sans',sans-serif">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="accepted">Accepted</option>
+            <option value="progress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Service</th><th>Customer</th><th>Worker</th><th>Location</th><th>Price</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="tasks-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── ACTIVITY LOG ────────────────────────────────────────────────── -->
+      <div class="pg" id="pg-activity">
+        <div class="section-hd">
+          <h3>Activity Log</h3>
+          <button class="tb-btn tb-btn-ghost" onclick="clearNotifs()">Clear All</button>
+        </div>
+        <div id="notif-list"></div>
+      </div>
+
+      <!-- ── CONNECT ────────────────────────────────────────────────────── -->
+      <div class="pg" id="pg-connect">
+
+        <!-- METHOD SELECTOR -->
+        <div class="connect-card">
+          <h3>🔗 Connect Admin to Your Handled Website</h3>
+          <p>Since your admin panel and main site live in <strong>different GitHub repos</strong>, they need a way to share data. Choose a connection method below.</p>
+          <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px">
+            <button class="cc-btn cc-primary" onclick="showMethod('jsonbin')">Option A · JSONBin (recommended)</button>
+            <button class="cc-btn cc-ghost"   onclick="showMethod('export')">Option B · Manual Export/Import</button>
+            <button class="cc-btn cc-ghost"   onclick="showMethod('same')">Option C · Same Repo</button>
+          </div>
+        </div>
+
+        <!-- JSONBIN METHOD -->
+        <div id="method-jsonbin" class="connect-card" style="display:none">
+          <h3>📦 Option A: JSONBin.io (Free Cloud Storage)</h3>
+          <p>JSONBin is a free REST API that stores JSON. Both your main site and this admin panel read/write from the same "bin". No server needed.</p>
+          <ol class="step-list">
+            <li>Go to <a href="https://jsonbin.io" target="_blank" style="color:var(--accent)">jsonbin.io</a> and create a free account.</li>
+            <li>Click <strong>Create Bin</strong> and paste this starter JSON:<br>
+              <code style="font-size:.71rem;background:var(--surface3);padding:4px 8px;border-radius:5px;display:inline-block;margin-top:4px;color:var(--accent)">{"users":{},"requests":[]}</code></li>
+            <li>Copy the <strong>Bin ID</strong> (looks like <code style="color:var(--accent);font-size:.71rem">64a1b2c3e4f5…</code>) and your <strong>Master Key</strong> (starts with <code style="color:var(--accent);font-size:.71rem">$2b$…</code>).</li>
+            <li>Paste them below and click <strong>Save &amp; Test Connection</strong>.</li>
+            <li>Add the same Bin ID and Master Key to your main site's <code style="color:var(--accent);font-size:.71rem">store.js</code> (instructions in the code snippet below).</li>
+          </ol>
+          <div class="divider"></div>
+          <div class="cg"><label>JSONBin Bin ID</label><input type="text" id="jb-bin-id" placeholder="64a1b2c3d4e5f60123456789" /></div>
+          <div class="cg"><label>JSONBin Master Key (X-Master-Key)</label><input type="password" id="jb-key" placeholder="$2b$10$..." /></div>
+          <div style="display:flex;gap:9px;margin-top:4px">
+            <button class="cc-btn cc-primary" onclick="saveJsonBin()">Save &amp; Test Connection</button>
+            <button class="cc-btn cc-ghost"   onclick="testJsonBin()">Test Only</button>
+            <button class="cc-btn cc-danger"  onclick="clearJsonBin()">Clear</button>
+          </div>
+          <div class="cc-status" id="jb-status"></div>
+          <div class="divider"></div>
+          <h3 style="margin-bottom:8px;font-size:.85rem">Add to your main site's store.js</h3>
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:11px">Replace the top of <code style="color:var(--accent)">store.js</code> with this snippet. Fill in your Bin ID and Master Key.</p>
+          <pre id="jb-snippet" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:.72rem;line-height:1.7;overflow-x:auto;color:#a8d8a8;white-space:pre-wrap"></pre>
+          <button class="cc-btn cc-ghost" style="margin-top:8px" onclick="copySnippet()">📋 Copy Snippet</button>
+        </div>
+
+        <!-- EXPORT/IMPORT METHOD -->
+        <div id="method-export" class="connect-card" style="display:none">
+          <h3>📤 Option B: Manual Export / Import (No Account Needed)</h3>
+          <p>Manually copy data between your main site and admin panel via JSON files. No setup required — best for low-traffic use or testing.</p>
+          <div class="divider"></div>
+          <h3 style="font-size:.85rem;margin-bottom:6px">Export from Admin → Main Site</h3>
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Download the current data from this admin panel as a JSON file, then import it into your main site's browser console.</p>
+          <div class="io-btn-row">
+            <button class="cc-btn cc-primary" onclick="exportData()">⬇ Download Data JSON</button>
+          </div>
+          <div class="divider"></div>
+          <h3 style="font-size:.85rem;margin-bottom:6px">Import from Main Site → Admin</h3>
+          <p style="font-size:.78rem;color:var(--muted);margin-bottom:10px">Export from your main site's browser console by running:<br>
+            <code style="font-size:.71rem;background:var(--surface3);padding:4px 8px;border-radius:5px;display:inline-block;margin-top:5px;color:var(--accent)">copy(JSON.stringify({users:JSON.parse(localStorage.hd_users||'{}'),requests:JSON.parse(localStorage.hd_requests||'[]')}))</code>
+            <br>Then paste the copied JSON below:</p>
+          <div class="cg"><label>Paste JSON from Main Site</label><textarea id="import-json" rows="4" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-size:.78rem;font-family:'DM Sans',sans-serif;resize:vertical" placeholder='{"users":{...},"requests":[...]}'></textarea></div>
+          <button class="cc-btn cc-primary" onclick="importData()">⬆ Import Data</button>
+        </div>
+
+        <!-- SAME REPO METHOD -->
+        <div id="method-same" class="connect-card" style="display:none">
+          <h3>📁 Option C: Put admin.html in the Same Repo</h3>
+          <p>The <strong>simplest</strong> option. Add <code style="color:var(--accent)">admin.html</code> to the same GitHub repository as your main Handled site. Since they share the same domain, they automatically share <code style="color:var(--accent)">localStorage</code> — no API keys or sync needed.</p>
+          <ol class="step-list">
+            <li>Copy <code style="color:var(--accent)">admin.html</code> into your main site's GitHub repo folder.</li>
+            <li>Commit and push to GitHub.</li>
+            <li>Your admin panel will be at <code style="color:var(--accent)">https://yourusername.github.io/repo-name/admin.html</code></li>
+            <li>Done — all data is shared automatically via localStorage.</li>
+          </ol>
+          <div style="margin-top:13px;padding:11px 14px;background:rgba(74,222,128,.07);border:1px solid rgba(74,222,128,.2);border-radius:var(--radius-sm);font-size:.78rem;color:var(--success)">
+            ✓ This is the easiest option. No JSONBin setup, no API keys. The only trade-off is your admin page is in the same repo.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── SETTINGS ───────────────────────────────────────────────────── -->
+      <div class="pg" id="pg-settings">
+        <div class="connect-card">
+          <h3>⚙️ Admin Credentials</h3>
+          <p>Change the admin username and password used to log into this panel. These are stored in <code style="color:var(--accent)">localStorage</code> on this browser — update directly in the script for a permanent change.</p>
+          <div class="cg"><label>New Username</label><input type="text" id="s-user" /></div>
+          <div class="cg"><label>New Password</label><input type="password" id="s-pass" /></div>
+          <div class="cg"><label>Confirm Password</label><input type="password" id="s-pass2" /></div>
+          <button class="cc-btn cc-primary" onclick="saveSettings()">Save Credentials</button>
+        </div>
+        <div class="connect-card">
+          <h3>🗑️ Danger Zone</h3>
+          <p style="color:var(--danger)">These actions are permanent. Use with caution.</p>
+          <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:10px">
+            <button class="cc-btn cc-danger" onclick="clearAllData()">Delete All Data</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL (KYC reject reason) -->
+<div class="modal-overlay" id="reject-modal">
+  <div class="modal-box">
+    <div class="modal-title">Reject KYC Application</div>
+    <div class="modal-sub">Provide a reason so the worker can resubmit correctly.</div>
+    <div class="cg"><label>Rejection Reason</label><input type="text" id="reject-reason" placeholder="e.g. ID photo is blurry, please resubmit." /></div>
+    <div class="modal-btns">
+      <button class="cc-btn cc-ghost" onclick="closeModal()">Cancel</button>
+      <button class="cc-btn cc-danger" onclick="confirmReject()">Confirm Reject</button>
+    </div>
+  </div>
 </div>
 
-<div id="dashboard" class="container dashboard">
-
-<h1>Dashboard</h1>
-
-<div class="stats">
-
-<div class="card">
-<h3>Total Jobs</h3>
-<p id="jobs">0</p>
-</div>
-
-<div class="card">
-<h3>Pending KYC</h3>
-<p id="kyc">0</p>
-</div>
-
-<div class="card">
-<h3>Workers</h3>
-<p id="workers">0</p>
-</div>
-
-<div class="card">
-<h3>Revenue</h3>
-<p id="revenue">P0</p>
-</div>
-
-</div>
-
-<h2>KYC Reviews</h2>
-
-<table>
-<tr>
-<th>Name</th>
-<th>Email</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-
-<tr>
-<td>Sample Worker</td>
-<td>worker@email.com</td>
-<td>Pending</td>
-<td>
-<button>Approve</button>
-<button>Reject</button>
-</td>
-</tr>
-
-</table>
-
-<h2>Job Requests</h2>
-
-<table>
-
-<tr>
-<th>Service</th>
-<th>Customer</th>
-<th>Location</th>
-<th>Price</th>
-<th>Status</th>
-</tr>
-
-<tr>
-<td>House Cleaning</td>
-<td>Customer Name</td>
-<td>Gaborone</td>
-<td>P250</td>
-<td>Open</td>
-</tr>
-
-</table>
-
-</div>
+<div id="toast-box"></div>
 
 <script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONFIGURATION — change these before deploying
+// ═══════════════════════════════════════════════════════════════════════════════
+const DEFAULT_ADMIN_USER = 'admin';
+const DEFAULT_ADMIN_PASS = 'handled2025';
+// ═══════════════════════════════════════════════════════════════════════════════
 
-const ADMIN_PASSWORD = "handled2025";
+// ── Storage helpers ────────────────────────────────────────────────────────────
+function getUsers()    { try { return JSON.parse(localStorage.getItem('hd_users')||'{}');    } catch { return {}; } }
+function getRequests() { try { return JSON.parse(localStorage.getItem('hd_requests')||'[]'); } catch { return []; } }
+function getNotifs()   { try { return JSON.parse(localStorage.getItem('hd_notifs')||'[]');   } catch { return []; } }
+function getAdminCreds() { return { user: localStorage.getItem('hd_admin_user')||DEFAULT_ADMIN_USER, pass: localStorage.getItem('hd_admin_pass')||DEFAULT_ADMIN_PASS }; }
 
-function login(){
-
-const pass =
-document.getElementById("adminPass").value;
-
-if(pass === ADMIN_PASSWORD){
-
-document.getElementById("loginPage")
-.style.display = "none";
-
-document.getElementById("dashboard")
-.style.display = "block";
-
-}else{
-
-alert("Wrong Password");
-
+// ── Login ─────────────────────────────────────────────────────────────────────
+function doAdminLogin() {
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value;
+  const c = getAdminCreds();
+  if (u === c.user && p === c.pass) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('sb-username').textContent = u;
+    refreshData();
+  } else {
+    document.getElementById('login-err').textContent = 'Invalid username or password.';
+    setTimeout(() => document.getElementById('login-err').textContent = '', 2500);
+  }
+}
+function doAdminLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('l-pass').value = '';
 }
 
+// ── Navigation ────────────────────────────────────────────────────────────────
+function goPage(id, btn) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('pg-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  const titles = { overview:'Overview', kyc:'KYC Review', workers:'Workers', customers:'Customers', tasks:'Tasks', activity:'Activity Log', connect:'Connect Site', settings:'Settings' };
+  document.getElementById('topbar-title').textContent = titles[id]||id;
+  renderPage(id);
 }
 
-function logout(){
-
-document.getElementById("dashboard")
-.style.display = "none";
-
-document.getElementById("loginPage")
-.style.display = "block";
-
+function renderPage(id) {
+  if (id==='overview')  renderOverview();
+  if (id==='kyc')       renderKYC();
+  if (id==='workers')   renderWorkers('');
+  if (id==='customers') renderCustomers('');
+  if (id==='tasks')     renderTasks('');
+  if (id==='activity')  renderNotifs();
 }
 
+// ── Refresh ───────────────────────────────────────────────────────────────────
+async function refreshData() {
+  const jbBin = localStorage.getItem('hd_admin_jb_bin');
+  const jbKey = localStorage.getItem('hd_admin_jb_key');
+  if (jbBin && jbKey) { await fetchFromJsonBin(jbBin, jbKey); }
+  updateBadges();
+  renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
+  toast('Data refreshed.','↻');
+}
+
+function updateBadges() {
+  const users = getUsers();
+  const pending = Object.values(users).filter(u=>u.role==='worker'&&u.kyc&&u.kyc.status==='pending').length;
+  const notifCount = getNotifs().length;
+  const kb = document.getElementById('sb-kyc-badge');
+  const nb = document.getElementById('sb-notif-badge');
+  kb.textContent = pending > 0 ? pending : '';
+  nb.textContent = notifCount > 0 ? (notifCount > 9 ? '9+' : notifCount) : '';
+}
+
+// ── Overview ─────────────────────────────────────────────────────────────────
+function renderOverview() {
+  const users = getUsers();
+  const reqs  = getRequests();
+  const workers  = Object.values(users).filter(u=>u.role==='worker');
+  const customers= Object.values(users).filter(u=>u.role==='customer');
+  const kycPend  = workers.filter(w=>w.kyc&&w.kyc.status==='pending').length;
+  const verified = workers.filter(w=>w.kyc&&w.kyc.status==='approved').length;
+  document.getElementById('st-workers').textContent   = workers.length;
+  document.getElementById('st-workers-v').textContent = verified+' verified';
+  document.getElementById('st-customers').textContent = customers.length;
+  document.getElementById('st-tasks').textContent     = reqs.length;
+  document.getElementById('st-tasks-p').textContent   = reqs.filter(r=>r.status==='pending').length+' pending';
+  document.getElementById('st-kyc').textContent       = kycPend;
+
+  // Recent 5 tasks
+  const recent = [...reqs].reverse().slice(0,5);
+  const sbMap = {pending:'badge-pending',accepted:'badge-accepted',progress:'badge-progress',done:'badge-done'};
+  document.getElementById('ov-tasks-body').innerHTML = recent.length
+    ? recent.map(r=>`<tr>
+        <td>${r.emoji} ${r.category}${r.subOption?' <span style="color:var(--muted)">'+r.subOption+'</span>':''}</td>
+        <td>${r.customerName||r.customer}</td>
+        <td style="color:var(--muted);font-size:.76rem">${r.location}</td>
+        <td style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">P${r.totalPrice}</td>
+        <td><span class="badge ${sbMap[r.status]||'badge-pending'}">${r.status}</span></td>
+        <td style="color:var(--muted);font-size:.73rem">${r.postedAt}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" class="empty"><div class="ei">📋</div><p>No tasks yet.</p></td></tr>';
+
+  // Recent 5 workers
+  const recentW = workers.slice(-5).reverse();
+  document.getElementById('ov-workers-body').innerHTML = recentW.length
+    ? recentW.map(w=>`<tr>
+        <td>${w.name}</td>
+        <td style="color:var(--muted);font-size:.75rem">${w.email}</td>
+        <td style="font-size:.74rem">${(w.services||[]).join(', ')||'—'}</td>
+        <td>${kycBadge(w.kyc?.status)}</td>
+        <td style="color:var(--muted);font-size:.73rem">${w.kyc?.submittedAt||'—'}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" class="empty" style="padding:20px;text-align:center;color:var(--muted)">No workers yet.</td></tr>';
+}
+
+function kycBadge(s) {
+  const m = {approved:'badge-approved ✓ Verified', rejected:'badge-rejected ✗ Rejected', pending:'badge-pending ⏳ Pending'};
+  const [cls, ...lbl] = (m[s]||'badge-pending ⏳ Pending').split(' ');
+  return `<span class="badge ${cls}">${lbl.join(' ')}</span>`;
+}
+
+// ── KYC Review ────────────────────────────────────────────────────────────────
+function renderKYC() {
+  const users   = getUsers();
+  const pending = Object.values(users).filter(u=>u.role==='worker'&&u.kyc&&u.kyc.status==='pending');
+  const el = document.getElementById('kyc-list');
+  if (!pending.length) { el.innerHTML='<div class="empty"><div class="ei">✓</div><p>No pending KYC submissions.</p></div>'; return; }
+  el.innerHTML = pending.map(w=>`
+    <div style="background:var(--surface);border:1px solid rgba(240,192,64,.2);border-radius:var(--radius);padding:20px 22px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:.93rem;font-weight:800">${w.name}</div>
+          <div style="font-size:.76rem;color:var(--muted);margin-top:2px">${w.email} · ${w.phone||'—'} · ${w.location||'—'}</div>
+          <div style="font-size:.74rem;color:var(--muted);margin-top:3px">Services: ${(w.services||[]).join(', ')||'—'}</div>
+          <div style="font-size:.72rem;color:var(--muted);margin-top:2px">Submitted: ${w.kyc.submittedAt||'—'}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="act-btn act-approve" onclick="approveKYC('${w.email}')">✓ Approve</button>
+          <button class="act-btn act-reject"  onclick="openRejectModal('${w.email}')">✗ Reject</button>
+        </div>
+      </div>
+    </div>`).join('');
+  updateBadges();
+}
+
+let rejectTarget = null;
+function openRejectModal(email) { rejectTarget = email; document.getElementById('reject-modal').classList.add('open'); }
+function closeModal() { document.getElementById('reject-modal').classList.remove('open'); rejectTarget=null; }
+function confirmReject() {
+  const reason = document.getElementById('reject-reason').value.trim() || 'Documents invalid or unclear.';
+  rejectKYC(rejectTarget, reason);
+  closeModal();
+}
+
+function approveKYC(email) {
+  const users = getUsers();
+  if (!users[email]) return;
+  users[email].kyc.status = 'approved'; users[email].kyc.approvedAt = new Date().toLocaleString();
+  localStorage.setItem('hd_users', JSON.stringify(users));
+  pushToJsonBin();
+  toast('KYC approved for '+users[email].name+'!','✓');
+  renderKYC(); renderOverview(); updateBadges();
+}
+
+function rejectKYC(email, reason) {
+  const users = getUsers();
+  if (!users[email]) return;
+  users[email].kyc.status = 'rejected'; users[email].kyc.rejectReason = reason; users[email].kyc.rejectedAt = new Date().toLocaleString();
+  localStorage.setItem('hd_users', JSON.stringify(users));
+  pushToJsonBin();
+  toast('KYC rejected for '+users[email].name+'.','✗');
+  renderKYC(); renderOverview(); updateBadges();
+}
+
+// ── Workers ───────────────────────────────────────────────────────────────────
+function renderWorkers(q='') {
+  const users = getUsers();
+  const all = Object.values(users).filter(u=>u.role==='worker').filter(u=> !q || u.name.toLowerCase().includes(q.toLowerCase()) || u.email.toLowerCase().includes(q.toLowerCase()));
+  const reqs = getRequests();
+  document.getElementById('workers-body').innerHTML = all.length
+    ? all.map(w=>{
+        const done = reqs.filter(r=>r.workerId===w.email&&r.status==='done').length;
+        return `<tr>
+          <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${w.name}</td>
+          <td style="color:var(--muted);font-size:.75rem">${w.email}</td>
+          <td style="color:var(--muted);font-size:.75rem">${w.phone||'—'}</td>
+          <td style="font-size:.76rem">${w.location||'—'}</td>
+          <td style="font-size:.73rem;max-width:160px">${(w.services||[]).join(', ')||'—'}</td>
+          <td>${kycBadge(w.kyc?.status)}</td>
+          <td style="color:var(--accent);font-family:'Syne',sans-serif;font-weight:700">${done}</td>
+          <td>
+            ${w.kyc?.status==='pending'?`<button class="act-btn act-approve" onclick="approveKYC('${w.email}')">✓ KYC</button> `:''}
+            <button class="act-btn act-delete" onclick="deleteUser('${w.email}')">Delete</button>
+          </td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--muted)">No workers found.</td></tr>';
+}
+
+// ── Customers ─────────────────────────────────────────────────────────────────
+function renderCustomers(q='') {
+  const users = getUsers();
+  const all = Object.values(users).filter(u=>u.role==='customer').filter(u=> !q || u.name.toLowerCase().includes(q.toLowerCase()) || u.email.toLowerCase().includes(q.toLowerCase()));
+  const reqs = getRequests();
+  document.getElementById('customers-body').innerHTML = all.length
+    ? all.map(c=>{
+        const count = reqs.filter(r=>r.customer===c.email).length;
+        return `<tr>
+          <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${c.name}</td>
+          <td style="color:var(--muted);font-size:.75rem">${c.email}</td>
+          <td style="color:var(--accent);font-family:'Syne',sans-serif;font-weight:700">${count}</td>
+          <td><button class="act-btn act-delete" onclick="deleteUser('${c.email}')">Delete</button></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--muted)">No customers found.</td></tr>';
+}
+
+// ── Tasks ─────────────────────────────────────────────────────────────────────
+function renderTasks(filter='') {
+  let reqs = getRequests();
+  if (filter) reqs = reqs.filter(r=>r.status===filter);
+  reqs = [...reqs].reverse();
+  const sbMap = {pending:'badge-pending',accepted:'badge-accepted',progress:'badge-progress',done:'badge-done'};
+  document.getElementById('tasks-body').innerHTML = reqs.length
+    ? reqs.map(r=>`<tr>
+        <td>${r.emoji} ${r.category}${r.subOption?'<br><span style="color:var(--muted);font-size:.72rem">'+r.subOption+'</span>':''}</td>
+        <td style="font-size:.77rem">${r.customerName||r.customer}</td>
+        <td style="font-size:.77rem;color:var(--muted)">${r.worker||'—'}</td>
+        <td style="font-size:.74rem;color:var(--muted)">${r.location}</td>
+        <td style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">P${r.totalPrice}</td>
+        <td><span class="badge ${sbMap[r.status]||'badge-pending'}">${r.status}</span></td>
+        <td style="color:var(--muted);font-size:.72rem">${r.date||r.postedAt.split(',')[0]}</td>
+        <td><button class="act-btn act-delete" onclick="deleteTask(${r.id})">Delete</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--muted)">No tasks found.</td></tr>';
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+function renderNotifs() {
+  const notifs = getNotifs();
+  const el = document.getElementById('notif-list');
+  if (!notifs.length) { el.innerHTML='<div class="empty"><div class="ei">🔔</div><p>No activity yet.</p></div>'; return; }
+  el.innerHTML = '<div class="notif-list">'+notifs.map(n=>`
+    <div class="notif-item">
+      <div class="ni-dot"></div>
+      <div><div class="ni-title">${n.title}</div><div class="ni-msg">${n.msg}</div></div>
+      <div class="ni-time">${n.time||''}</div>
+    </div>`).join('')+'</div>';
+}
+function clearNotifs() { localStorage.removeItem('hd_notifs'); renderNotifs(); updateBadges(); toast('Activity log cleared.','🗑'); }
+
+// ── User / Task deletion ───────────────────────────────────────────────────────
+function deleteUser(email) {
+  if (!confirm('Delete user '+email+'? This cannot be undone.')) return;
+  const users = getUsers(); delete users[email]; localStorage.setItem('hd_users', JSON.stringify(users));
+  pushToJsonBin(); renderOverview(); renderWorkers(''); renderCustomers('');
+  toast('User deleted.','🗑');
+}
+function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  const reqs = getRequests().filter(r=>r.id!==id);
+  localStorage.setItem('hd_requests', JSON.stringify(reqs));
+  pushToJsonBin(); renderOverview(); renderTasks('');
+  toast('Task deleted.','🗑');
+}
+
+// ── Settings ───────────────────────────────────────────────────────────────────
+function saveSettings() {
+  const u = document.getElementById('s-user').value.trim();
+  const p = document.getElementById('s-pass').value;
+  const p2= document.getElementById('s-pass2').value;
+  if (!u) { toast('Username cannot be empty.','⚠'); return; }
+  if (p && p!==p2) { toast('Passwords do not match.','⚠'); return; }
+  if (u) localStorage.setItem('hd_admin_user', u);
+  if (p) localStorage.setItem('hd_admin_pass', p);
+  toast('Credentials saved!','✓');
+}
+function clearAllData() {
+  if (!confirm('DELETE ALL users and tasks? This is permanent.')) return;
+  localStorage.removeItem('hd_users'); localStorage.removeItem('hd_requests'); localStorage.removeItem('hd_notifs');
+  pushToJsonBin(); refreshData(); toast('All data cleared.','🗑');
+}
+
+// ── JSONBin Integration ────────────────────────────────────────────────────────
+const JB_API = 'https://api.jsonbin.io/v3/b';
+function jbHeaders(key) { return { 'Content-Type':'application/json', 'X-Master-Key':key }; }
+
+async function fetchFromJsonBin(bin, key) {
+  try {
+    document.getElementById('sync-status').textContent = '⟳ Syncing…';
+    const res = await fetch(`${JB_API}/${bin}/latest`, { headers: jbHeaders(key) });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const data = (await res.json()).record;
+    if (data.users)    localStorage.setItem('hd_users',    JSON.stringify(data.users));
+    if (data.requests) localStorage.setItem('hd_requests', JSON.stringify(data.requests));
+    document.getElementById('sync-status').textContent = '● JSONBin ✓';
+    document.getElementById('sync-status').style.color = 'var(--success)';
+  } catch(e) {
+    document.getElementById('sync-status').textContent = '● Sync failed';
+    document.getElementById('sync-status').style.color = 'var(--danger)';
+  }
+}
+
+async function pushToJsonBin() {
+  const bin = localStorage.getItem('hd_admin_jb_bin');
+  const key = localStorage.getItem('hd_admin_jb_key');
+  if (!bin || !key) return;
+  try {
+    const payload = { users: getUsers(), requests: getRequests() };
+    await fetch(`${JB_API}/${bin}`, { method:'PUT', headers: jbHeaders(key), body: JSON.stringify(payload) });
+  } catch(e) { console.warn('JSONBin push failed', e); }
+}
+
+async function saveJsonBin() {
+  const bin = document.getElementById('jb-bin-id').value.trim();
+  const key = document.getElementById('jb-key').value.trim();
+  if (!bin || !key) { setJbStatus('Fill in both Bin ID and Master Key.','err'); return; }
+  localStorage.setItem('hd_admin_jb_bin', bin);
+  localStorage.setItem('hd_admin_jb_key', key);
+  await testJsonBin();
+}
+
+async function testJsonBin() {
+  const bin = localStorage.getItem('hd_admin_jb_bin')||document.getElementById('jb-bin-id').value.trim();
+  const key = localStorage.getItem('hd_admin_jb_key')||document.getElementById('jb-key').value.trim();
+  if (!bin || !key) { setJbStatus('Bin ID and Master Key are required.','err'); return; }
+  try {
+    const res = await fetch(`${JB_API}/${bin}/latest`, { headers: jbHeaders(key) });
+    if (!res.ok) throw new Error('HTTP '+res.status+' — check Bin ID and Master Key');
+    const data = (await res.json()).record;
+    if (data.users)    localStorage.setItem('hd_users',    JSON.stringify(data.users));
+    if (data.requests) localStorage.setItem('hd_requests', JSON.stringify(data.requests));
+    setJbStatus('✓ Connected! Loaded '+Object.keys(data.users||{}).length+' users and '+(data.requests||[]).length+' tasks.','ok');
+    document.getElementById('sync-status').textContent = '● JSONBin ✓';
+    document.getElementById('sync-status').style.color = 'var(--success)';
+    updateSnippet(bin, key);
+    toast('JSONBin connected!','🔗');
+    renderOverview(); updateBadges();
+  } catch(e) {
+    setJbStatus('✗ Connection failed: '+e.message,'err');
+  }
+}
+
+function clearJsonBin() {
+  localStorage.removeItem('hd_admin_jb_bin'); localStorage.removeItem('hd_admin_jb_key');
+  document.getElementById('jb-bin-id').value=''; document.getElementById('jb-key').value='';
+  setJbStatus('','');
+  document.getElementById('sync-status').textContent = '● Local';
+  document.getElementById('sync-status').style.color = 'var(--muted)';
+  toast('JSONBin config cleared.','🗑');
+}
+
+function setJbStatus(msg, cls) {
+  const el = document.getElementById('jb-status');
+  el.className = 'cc-status'+(cls?' '+cls:'');
+  el.textContent = msg;
+}
+
+function updateSnippet(bin, key) {
+  const snip = `// ── Handled · store.js with JSONBin sync ────────────────
+const JB_BIN = '${bin}';
+const JB_KEY = '${key}';
+const JB_URL = 'https://api.jsonbin.io/v3/b/'+JB_BIN;
+
+// Call this on page load to pull latest data from JSONBin
+async function syncFromCloud() {
+  try {
+    const res = await fetch(JB_URL+'/latest', {
+      headers: { 'X-Master-Key': JB_KEY }
+    });
+    const data = (await res.json()).record;
+    if (data.users)    localStorage.setItem('hd_users',    JSON.stringify(data.users));
+    if (data.requests) localStorage.setItem('hd_requests', JSON.stringify(data.requests));
+  } catch(e) { console.warn('Sync failed', e); }
+}
+
+// Call this whenever data changes to push to JSONBin
+async function pushToCloud() {
+  try {
+    await fetch(JB_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type':'application/json', 'X-Master-Key': JB_KEY },
+      body: JSON.stringify({
+        users:    JSON.parse(localStorage.getItem('hd_users')||'{}'),
+        requests: JSON.parse(localStorage.getItem('hd_requests')||'[]')
+      })
+    });
+  } catch(e) { console.warn('Push failed', e); }
+}
+
+// Add this to DOMContentLoaded in store.js:
+document.addEventListener('DOMContentLoaded', () => {
+  syncFromCloud(); // pull on load
+  // ... rest of your DOMContentLoaded code
+});`;
+  document.getElementById('jb-snippet').textContent = snip;
+}
+
+function copySnippet() {
+  const txt = document.getElementById('jb-snippet').textContent;
+  navigator.clipboard.writeText(txt).then(()=>toast('Snippet copied!','📋')).catch(()=>toast('Select and copy manually.','⚠'));
+}
+
+// ── Connect page show/hide ────────────────────────────────────────────────────
+function showMethod(m) {
+  ['jsonbin','export','same'].forEach(id => {
+    document.getElementById('method-'+id).style.display = id===m ? '' : 'none';
+  });
+}
+
+// ── Import / Export ───────────────────────────────────────────────────────────
+function exportData() {
+  const data = { users: getUsers(), requests: getRequests() };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='handled-data.json'; a.click();
+  toast('Data exported!','⬇');
+}
+
+function importData() {
+  const raw = document.getElementById('import-json').value.trim();
+  try {
+    const d = JSON.parse(raw);
+    if (d.users)    localStorage.setItem('hd_users',    JSON.stringify(d.users));
+    if (d.requests) localStorage.setItem('hd_requests', JSON.stringify(d.requests));
+    document.getElementById('import-json').value='';
+    refreshData(); toast('Data imported!','⬆');
+  } catch(e) { toast('Invalid JSON — check your paste.','✕'); }
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(text, icon='✓') {
+  const c = document.getElementById('toast-box');
+  const t = document.createElement('div'); t.className='toast';
+  t.innerHTML=`<span>${icon}</span> ${text}`;
+  c.appendChild(t); setTimeout(()=>t.remove(),3000);
+}
+
+// ── On load ───────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('l-user').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('l-pass').focus(); });
+  // Pre-fill JSONBin fields if already saved
+  const savedBin = localStorage.getItem('hd_admin_jb_bin');
+  const savedKey = localStorage.getItem('hd_admin_jb_key');
+  if (savedBin) document.getElementById('jb-bin-id').value = savedBin;
+  if (savedKey) document.getElementById('jb-key').value = savedKey;
+  if (savedBin && savedKey) { updateSnippet(savedBin, savedKey); }
+});
 </script>
-
 </body>
 </html>
