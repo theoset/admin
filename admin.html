@@ -15,97 +15,60 @@
       --radius: 12px; --radius-sm: 8px; --sidebar: 220px;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
     body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; }
 
-    /* ── LOGIN ── */
     #login-screen {
-      display:flex; align-items:center; justify-content:center;
-      min-height:100vh; width:100%;
+      display:flex; align-items:center; justify-content:center; min-height:100vh; width:100%;
       background:radial-gradient(ellipse 70% 50% at 50% 40%, #1a1000, var(--bg) 70%);
     }
-    .login-box {
-      background:var(--surface); border:1px solid var(--border);
-      border-radius:var(--radius); padding:38px 34px; width:100%; max-width:380px;
-    }
+    .login-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:38px 34px; width:100%; max-width:380px; }
     .login-logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); margin-bottom:5px; }
     .login-sub  { font-size:.78rem; color:var(--muted); margin-bottom:26px; }
     .lf-group   { margin-bottom:13px; }
     .lf-group label { display:block; font-size:.74rem; color:var(--muted); margin-bottom:5px; font-weight:500; }
-    .lf-group input {
-      width:100%; background:var(--surface2); border:1px solid var(--border);
-      border-radius:var(--radius-sm); padding:10px 12px; color:var(--text);
-      font-size:.86rem; font-family:'DM Sans',sans-serif; transition:border .18s;
-    }
+    .lf-group input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; color:var(--text); font-size:.86rem; transition:border .18s; }
     .lf-group input:focus { outline:none; border-color:var(--accent); }
-    .login-btn {
-      width:100%; padding:12px; background:var(--accent); border:none;
-      border-radius:var(--radius-sm); color:#0a0b0d; font-size:.9rem; font-weight:700;
-      cursor:pointer; font-family:'Syne',sans-serif; transition:all .18s; margin-top:4px;
-    }
+    .login-btn { width:100%; padding:12px; background:var(--accent); border:none; border-radius:var(--radius-sm); color:#0a0b0d; font-size:.9rem; font-weight:700; cursor:pointer; font-family:'Syne',sans-serif; transition:all .18s; margin-top:4px; }
     .login-btn:hover { background:#ffd055; }
     .login-err { color:var(--danger); font-size:.76rem; margin-top:9px; text-align:center; min-height:18px; }
 
-    /* ── SHELL ── */
     #app { display:none; width:100%; min-height:100vh; }
-
-    /* SIDEBAR */
-    .sidebar {
-      width:var(--sidebar); background:var(--surface); border-right:1px solid var(--border);
-      display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100;
-    }
+    .sidebar { width:var(--sidebar); background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100; }
     .sb-logo { padding:22px 20px 14px; border-bottom:1px solid var(--border); }
     .sb-logo-name { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800; color:var(--accent); }
     .sb-logo-tag  { font-size:.65rem; color:var(--muted); margin-top:2px; }
     .sb-nav { flex:1; padding:12px 10px; overflow-y:auto; }
     .sb-section { font-size:.62rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); padding:14px 10px 6px; }
-    .sb-link {
-      display:flex; align-items:center; gap:9px; padding:9px 11px;
-      border-radius:var(--radius-sm); font-size:.81rem; color:var(--muted);
-      cursor:pointer; transition:all .18s; margin-bottom:2px; border:none;
-      background:transparent; width:100%; text-align:left; font-family:'DM Sans',sans-serif;
-    }
+    .sb-link { display:flex; align-items:center; gap:9px; padding:9px 11px; border-radius:var(--radius-sm); font-size:.81rem; color:var(--muted); cursor:pointer; transition:all .18s; margin-bottom:2px; border:none; background:transparent; width:100%; text-align:left; }
     .sb-link:hover { color:var(--text); background:var(--surface2); }
     .sb-link.active { color:var(--accent); background:rgba(240,192,64,.09); }
     .sb-link .si { font-size:.9rem; }
     .sb-link .badge { margin-left:auto; background:var(--danger); color:#fff; padding:1px 6px; border-radius:99px; font-size:.62rem; font-weight:700; }
     .sb-bottom { padding:14px 10px; border-top:1px solid var(--border); }
     .sb-user { display:flex; align-items:center; gap:9px; padding:8px 11px; border-radius:var(--radius-sm); background:var(--surface2); }
-    .sb-avatar { width:30px; height:30px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:.8rem; font-weight:800; color:#0a0b0d; flex-shrink:0; }
+    .sb-avatar { width:30px; height:30px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:.8rem; font-weight:800; color:#0a0b0d; }
     .sb-user-name { font-size:.76rem; font-weight:500; }
     .sb-user-role { font-size:.64rem; color:var(--muted); }
 
-    /* MAIN */
     .main { margin-left:var(--sidebar); flex:1; min-height:100vh; display:flex; flex-direction:column; }
-    .topbar {
-      position:sticky; top:0; z-index:50;
-      background:rgba(10,11,13,.92); backdrop-filter:blur(16px);
-      border-bottom:1px solid var(--border); padding:0 30px;
-      display:flex; align-items:center; justify-content:space-between; height:58px;
-    }
+    .topbar { position:sticky; top:0; z-index:50; background:rgba(10,11,13,.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); padding:0 30px; display:flex; align-items:center; justify-content:space-between; height:58px; }
     .topbar-title { font-family:'Syne',sans-serif; font-size:1rem; font-weight:800; }
     .topbar-actions { display:flex; align-items:center; gap:9px; }
-    .tb-btn {
-      padding:7px 14px; border-radius:var(--radius-sm); font-size:.78rem;
-      font-weight:500; cursor:pointer; border:none; transition:all .18s; font-family:'DM Sans',sans-serif;
-    }
+    .tb-btn { padding:7px 14px; border-radius:var(--radius-sm); font-size:.78rem; font-weight:500; cursor:pointer; border:none; transition:all .18s; }
     .tb-btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border); }
     .tb-btn-ghost:hover { color:var(--text); border-color:var(--text); }
     .content { flex:1; padding:28px 30px; overflow-y:auto; }
 
-    /* PAGES */
     .pg { display:none; animation:fadeIn .25s ease; }
     .pg.active { display:block; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; } }
 
-    /* STAT CARDS */
     .stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
     .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; }
     .sc-label { font-size:.7rem; color:var(--muted); font-weight:500; margin-bottom:7px; text-transform:uppercase; letter-spacing:.06em; }
     .sc-val   { font-family:'Syne',sans-serif; font-size:1.9rem; font-weight:800; }
     .sc-sub   { font-size:.72rem; color:var(--muted); margin-top:4px; }
 
-    /* TABLES */
     .section-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; flex-wrap:wrap; gap:9px; }
     .section-hd h3 { font-family:'Syne',sans-serif; font-size:.93rem; font-weight:800; }
     .tbl-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
@@ -117,22 +80,13 @@
     tbody tr { transition:background .15s; }
     tbody tr:hover { background:rgba(255,255,255,.02); }
 
-    /* BADGE */
     .badge { display:inline-flex; align-items:center; gap:3px; padding:3px 9px; border-radius:99px; font-size:.67rem; font-weight:700; }
     .badge-pending  { background:rgba(240,192,64,.15); color:var(--accent); }
     .badge-approved { background:rgba(74,222,128,.15); color:var(--success); }
     .badge-rejected { background:rgba(248,113,113,.15); color:var(--danger); }
-    .badge-customer { background:rgba(96,165,250,.15); color:var(--info); }
-    .badge-worker   { background:rgba(251,146,60,.15); color:var(--warn); }
     .badge-done      { background:rgba(74,222,128,.12); color:var(--success); border:1px solid rgba(74,222,128,.25); }
-    .badge-accepted { background:rgba(96,165,250,.12); color:var(--info); border:1px solid rgba(96,165,250,.25); }
-    .badge-progress { background:rgba(251,146,60,.12); color:var(--warn); border:1px solid rgba(251,146,60,.25); }
 
-    /* ACTION BTNS */
-    .act-btn {
-      padding:4px 10px; border-radius:6px; font-size:.72rem; font-weight:600;
-      cursor:pointer; border:none; font-family:'DM Sans',sans-serif; transition:all .18s;
-    }
+    .act-btn { padding:4px 10px; border-radius:6px; font-size:.72rem; font-weight:600; cursor:pointer; border:none; transition:all .18s; }
     .act-approve { background:rgba(74,222,128,.15); color:var(--success); border:1px solid rgba(74,222,128,.3); }
     .act-approve:hover { background:rgba(74,222,128,.28); }
     .act-reject  { background:rgba(248,113,113,.12); color:var(--danger); border:1px solid rgba(248,113,113,.3); }
@@ -142,47 +96,19 @@
 
     .cg { margin-bottom:12px; }
     .cg label { display:block; font-size:.74rem; color:var(--muted); margin-bottom:5px; font-weight:500; }
-    .cg input {
-      width:100%; background:var(--surface2); border:1px solid var(--border);
-      border-radius:var(--radius-sm); padding:9px 12px; color:var(--text);
-      font-size:.84rem; font-family:'DM Sans',sans-serif; transition:border .18s;
-    }
-    .cg input:focus { outline:none; border-color:var(--accent); }
-    .cc-btn {
-      padding:9px 20px; border-radius:var(--radius-sm); font-size:.83rem; font-weight:600;
-      cursor:pointer; border:none; font-family:'Syne',sans-serif; transition:all .18s;
-    }
+    .cg input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 12px; color:var(--text); font-size:.84rem; }
+    .cc-btn { padding:9px 20px; border-radius:var(--radius-sm); font-size:.83rem; font-weight:600; cursor:pointer; border:none; transition:all .18s; }
     .cc-primary { background:var(--accent); color:#0a0b0d; }
-    .cc-primary:hover { background:#ffd055; }
 
-    /* NOTIFY LOG */
     .notif-list { display:flex; flex-direction:column; gap:8px; }
     .notif-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 15px; display:flex; gap:12px; align-items:flex-start; }
     .ni-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; margin-top:4px; }
     .ni-title { font-size:.8rem; font-weight:600; }
     .ni-msg   { font-size:.74rem; color:var(--muted); margin-top:2px; }
-
-    /* EMPTY */
     .empty { text-align:center; padding:38px 18px; color:var(--muted); }
     .empty .ei { font-size:1.8rem; margin-bottom:9px; }
-
-    /* TOAST */
-    #toast-box { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:7px; align-items:flex-end; }
     .toast { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 15px; font-size:.83rem; display:flex; align-items:center; gap:8px; max-width:280px; animation:fadeIn .22s ease; }
-
-    /* MODAL */
-    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:500; align-items:center; justify-content:center; padding:20px; }
-    .modal-overlay.open { display:flex; }
-    .modal-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:28px; max-width:440px; width:100%; }
-    .modal-title { font-family:'Syne',sans-serif; font-size:.95rem; font-weight:800; margin-bottom:5px; }
-    .modal-sub   { font-size:.8rem; color:var(--muted); margin-bottom:18px; }
-    .modal-btns  { display:flex; gap:9px; margin-top:18px; justify-content:flex-end; }
-
-    @media(max-width:720px){
-      .sidebar { display:none; }
-      .main { margin-left:0; }
-      .stat-grid { grid-template-columns:repeat(2,1fr); }
-    }
+    #toast-box { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:7px; }
   </style>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
@@ -198,48 +124,28 @@
     </div>
     <div class="lf-group">
       <label>Password</label>
-      <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"
-             onkeydown="if(event.key==='Enter')doAdminLogin()" />
+      <input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()" />
     </div>
     <button class="login-btn" onclick="doAdminLogin()">Login →</button>
     <div class="login-err" id="login-err"></div>
-    <div style="margin-top:18px;padding:10px;background:rgba(240,192,64,.06);border:1px solid rgba(240,192,64,.15);border-radius:8px;font-size:.72rem;color:var(--muted)">
-      Default credentials: <strong style="color:var(--accent)">admin</strong> / <strong style="color:var(--accent)">handled2026</strong>
-    </div>
   </div>
 </div>
 
 <div id="app">
-
   <aside class="sidebar">
-    <div class="sb-logo">
-      <div class="sb-logo-name">Handled</div>
-      <div class="sb-logo-tag">Admin Dashboard</div>
-    </div>
+    <div class="sb-logo"><div class="sb-logo-name">Handled</div><div class="sb-logo-tag">Admin Dashboard</div></div>
     <nav class="sb-nav">
       <div class="sb-section">Overview</div>
       <button class="sb-link active" onclick="goPage('overview',this)"><span class="si">📊</span> Overview</button>
       <button class="sb-link" onclick="goPage('activity',this)"><span class="si">🔔</span> Activity Log <span class="badge" id="sb-notif-badge"></span></button>
-
       <div class="sb-section">Management</div>
       <button class="sb-link" onclick="goPage('kyc',this)"><span class="si">🪪</span> KYC Review <span class="badge" id="sb-kyc-badge"></span></button>
       <button class="sb-link" onclick="goPage('workers',this)"><span class="si">👷</span> Workers</button>
       <button class="sb-link" onclick="goPage('customers',this)"><span class="si">🧑</span> Customers</button>
       <button class="sb-link" onclick="goPage('tasks',this)"><span class="si">📋</span> Tasks</button>
-
       <div class="sb-section">System</div>
       <button class="sb-link" onclick="goPage('settings',this)"><span class="si">⚙️</span> Settings</button>
     </nav>
-    <div class="sb-bottom">
-      <div class="sb-user">
-        <div class="sb-avatar">A</div>
-        <div>
-          <div class="sb-user-name" id="sb-username">Admin</div>
-          <div class="sb-user-role">Super Admin</div>
-        </div>
-      </div>
-      <button onclick="doAdminLogout()" style="margin-top:8px;width:100%;padding:8px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--muted);cursor:pointer;font-size:.75rem;font-family:'DM Sans',sans-serif;transition:all .18s" onmouseover="this.style.color='var(--danger)';this.style.borderColor='rgba(248,113,113,.5)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Logout</button>
-    </div>
   </aside>
 
   <div class="main">
@@ -252,7 +158,6 @@
     </div>
 
     <div class="content">
-
       <div class="pg active" id="pg-overview">
         <div class="stat-grid">
           <div class="stat-card"><div class="sc-label">Total Workers</div><div class="sc-val" id="st-workers">0</div><div class="sc-sub" id="st-workers-v">0 verified</div></div>
@@ -261,7 +166,7 @@
           <div class="stat-card"><div class="sc-label">KYC Pending</div><div class="sc-val" id="st-kyc" style="color:var(--accent)">0</div><div class="sc-sub">Awaiting review</div></div>
         </div>
 
-        <div class="section-hd"><h3>Recent Tasks</h3><button class="tb-btn tb-btn-ghost" onclick="goPage('tasks',document.querySelector('[onclick*=tasks]'))">View All</button></div>
+        <div class="section-hd"><h3>Recent Tasks</h3></div>
         <div class="tbl-wrap" style="margin-bottom:24px">
           <table>
             <thead><tr><th>Service</th><th>Customer</th><th>Description</th><th>Price</th><th>Status</th></tr></thead>
@@ -269,10 +174,10 @@
           </table>
         </div>
 
-        <div class="section-hd"><h3>Recent Worker Registrations</h3><button class="tb-btn tb-btn-ghost" onclick="goPage('workers',document.querySelector('[onclick*=workers]'))">View All</button></div>
+        <div class="section-hd"><h3>Recent Worker Registrations</h3></div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Email</th><th>Bio Summary</th><th>KYC Status</th></tr></thead>
+            <thead><tr><th>Name</th><th>Bio Summary</th><th>KYC Status</th></tr></thead>
             <tbody id="ov-workers-body"></tbody>
           </table>
         </div>
@@ -284,42 +189,27 @@
       </div>
 
       <div class="pg" id="pg-workers">
-        <div class="section-hd">
-          <h3>All Workers</h3>
-          <input type="search" placeholder="Search name / email…" oninput="renderWorkers(this.value)" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text);font-size:.8rem;font-family:'DM Sans',sans-serif;width:210px">
-        </div>
+        <div class="section-hd"><h3>All Workers</h3></div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Jobs Done</th><th>Rating</th><th>KYC</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Name</th><th>Jobs Done</th><th>Rating</th><th>KYC</th><th>Actions</th></tr></thead>
             <tbody id="workers-body"></tbody>
           </table>
         </div>
       </div>
 
       <div class="pg" id="pg-customers">
-        <div class="section-hd">
-          <h3>All Customers</h3>
-          <input type="search" placeholder="Search name / email…" oninput="renderCustomers(this.value)" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text);font-size:.8rem;font-family:'DM Sans',sans-serif;width:210px">
-        </div>
+        <div class="section-hd"><h3>All Customers</h3></div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Name</th><th>Email</th><th>Actions</th></tr></thead>
             <tbody id="customers-body"></tbody>
           </table>
         </div>
       </div>
 
       <div class="pg" id="pg-tasks">
-        <div class="section-hd">
-          <h3>All Tasks</h3>
-          <select onchange="renderTasks(this.value)" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;color:var(--text);font-size:.8rem;font-family:'DM Sans',sans-serif">
-            <option value="">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="accepted">Accepted</option>
-            <option value="progress">In Progress</option>
-            <option value="done">Done</option>
-          </select>
-        </div>
+        <div class="section-hd"><h3>All Tasks</h3></div>
         <div class="tbl-wrap">
           <table>
             <thead><tr><th>Service</th><th>Customer</th><th>Description</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
@@ -328,377 +218,147 @@
         </div>
       </div>
 
-      <div class="pg" id="pg-activity">
-        <div class="section-hd">
-          <h3>Activity Log</h3>
-        </div>
-        <div id="notif-list"></div>
-      </div>
-
+      <div class="pg" id="pg-activity"><div id="notif-list"></div></div>
       <div class="pg" id="pg-settings">
         <div class="connect-card">
-          <h3>⚙️ Admin Credentials</h3>
-          <p>Change the admin username and password used to log into this panel.</p>
-          <div class="cg"><label>New Username</label><input type="text" id="s-user" /></div>
-          <div class="cg"><label>New Password</label><input type="password" id="s-pass" /></div>
-          <div class="cg"><label>Confirm Password</label><input type="password" id="s-pass2" /></div>
-          <button class="cc-btn cc-primary" onclick="saveSettings()">Save Credentials</button>
+          <h3>⚙️ Credentials Update</h3>
+          <button class="cc-btn cc-primary" onclick="saveSettings()">Save Configuration</button>
         </div>
       </div>
-
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="reject-modal">
-  <div class="modal-box">
-    <div class="modal-title">Reject KYC Application</div>
-    <div class="modal-sub">Provide a reason so the worker can resubmit correctly.</div>
-    <div class="cg"><label>Rejection Reason</label><input type="text" id="reject-reason" placeholder="e.g. ID photo is blurry, please resubmit." /></div>
-    <div class="modal-btns">
-      <button class="cc-btn cc-ghost" onclick="closeModal()">Cancel</button>
-      <button class="cc-btn cc-danger" onclick="confirmReject()">Confirm Reject</button>
     </div>
   </div>
 </div>
 
 <div id="toast-box"></div>
-
 <script src="supabase.js"></script>
 
 <script>
-// ─── Global State Relational Cache Cache ───
 let cache = { jobs: [], workers: [], customers: [], activity: [] };
-let rejectTargetId = null;
 
 function getCategoryName(catId) {
   const mapping = { 1: 'House Cleaning', 2: 'Gardening', 3: 'Moving Assistance', 4: 'Handyman', 5: 'Plumbing', 6: 'Delivery', 7: 'Miscellaneous' };
   return mapping[catId] || 'General Task';
 }
 
-function getAdminCreds() { 
-  return { 
-    user: localStorage.getItem('hd_admin_user') || 'admin', 
-    pass: localStorage.getItem('hd_admin_pass') || 'handled2026' 
-  }; 
-}
-
 function doAdminLogin() {
-  const u = document.getElementById('l-user').value.trim();
-  const p = document.getElementById('l-pass').value;
-  const c = getAdminCreds();
-  if (u === c.user && p === c.pass) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    document.getElementById('sb-username').textContent = u;
-    refreshData();
-  } else {
-    document.getElementById('login-err').textContent = 'Invalid username or password.';
-    setTimeout(() => document.getElementById('login-err').textContent = '', 2500);
-  }
-}
-
-function doAdminLogout() {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('l-pass').value = '';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  refreshData();
 }
 
 function goPage(id, btn) {
   document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
   document.getElementById('pg-'+id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  const titles = { overview:'Overview', kyc:'KYC Review', workers:'Workers', customers:'Customers', tasks:'Tasks', activity:'Activity Log', settings:'Settings' };
-  document.getElementById('topbar-title').textContent = titles[id] || id;
   renderPage(id);
 }
 
 function renderPage(id) {
   if (id === 'overview')  renderOverview();
   if (id === 'kyc')       renderKYC();
-  if (id === 'workers')   renderWorkers('');
-  if (id === 'customers') renderCustomers('');
-  if (id === 'tasks')     renderTasks('');
-  if (id === 'activity')  renderNotifs();
+  if (id === 'workers')   renderWorkers();
+  if (id === 'customers') renderCustomers();
+  if (id === 'tasks')     renderTasks();
 }
 
-// ─── Cloud Sync Core Fetch ───
 async function refreshData() {
   if (!window.supabaseClient) return;
-  document.getElementById('sync-status').textContent = '⟳ Syncing...';
-  document.getElementById('sync-status').style.color = 'var(--accent)';
+  const [jobsRes, workersRes, usersRes] = await Promise.all([
+    window.supabaseClient.from('jobs').select('*, users!customer_id(*)'),
+    window.supabaseClient.from('worker_profiles').select('*, users(*)'),
+    window.supabaseClient.from('users').select('*')
+  ]);
 
-  try {
-    const [jobsRes, workersRes, usersRes] = await Promise.all([
-      window.supabaseClient.from('jobs').select('*, users!customer_id(*)'),
-      window.supabaseClient.from('worker_profiles').select('*, users(*)'),
-      window.supabaseClient.from('users').select('*')
-    ]);
+  cache.jobs = jobsRes.data || [];
+  cache.workers = workersRes.data || [];
+  cache.customers = (usersRes.data || []).filter(u => u.role === 'customer');
 
-    cache.jobs = jobsRes.data || [];
-    cache.workers = workersRes.data || [];
-    cache.customers = (usersRes.data || []).filter(u => u.role === 'customer');
-
-    cache.activity = [];
-    cache.jobs.slice(-3).forEach(j => {
-      const name = j.users ? `${j.users.first_name} ${j.users.last_name}` : 'Customer';
-      cache.activity.push({ title: 'Job Event Posted', msg: `${name} requested ${getCategoryName(j.category_id)}` });
-    });
-    cache.workers.slice(-3).forEach(w => {
-      const name = w.users ? `${w.users.first_name} ${w.users.last_name}` : 'A worker';
-      cache.activity.push({ title: 'Worker Registration Logged', msg: `${name} initiated onboarding checking.` });
-    });
-
-    document.getElementById('sync-status').textContent = '● Supabase Live';
-    document.getElementById('sync-status').style.color = 'var(--success)';
-
-    updateBadges();
-    renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
-  } catch(e) {
-    document.getElementById('sync-status').textContent = '● Connection Unresolved';
-    document.getElementById('sync-status').style.color = 'var(--danger)';
-  }
+  updateBadges();
+  renderPage('overview');
 }
 
 function updateBadges() {
-  const pendingKycCount = cache.workers.filter(w => w.verified === false).length;
-  const notifCount = cache.activity.length;
-  document.getElementById('sb-kyc-badge').textContent = pendingKycCount > 0 ? pendingKycCount : '';
-  document.getElementById('sb-notif-badge').textContent = notifCount > 0 ? notifCount : '';
+  const pending = cache.workers.filter(w => w.verified === false).length;
+  document.getElementById('sb-kyc-badge').textContent = pending > 0 ? pending : '';
 }
 
 function kycBadge(verifiedBool) {
-  return verifiedBool 
-    ? `<span class="badge badge-approved">✓ Verified</span>` 
-    : `<span class="badge badge-pending">⏳ Pending</span>`;
+  return verifiedBool ? `<span class="badge badge-approved">✓ Verified</span>` : `<span class="badge badge-pending">⏳ Pending</span>`;
 }
 
-// ─── Component Rendering ───
 function renderOverview() {
-  const totalWorkers = cache.workers.length;
-  const verifiedWorkers = cache.workers.filter(w => w.verified === true).length;
-  const totalCustomers = cache.customers.length;
-  const totalTasks = cache.jobs.length;
-  const pendingTasks = cache.jobs.filter(j => j.status === 'pending').length;
-  const pendingKyc = cache.workers.filter(w => w.verified === false).length;
+  document.getElementById('st-workers').textContent = cache.workers.length;
+  document.getElementById('st-workers-v').textContent = cache.workers.filter(w => w.verified).length + ' verified';
+  document.getElementById('st-customers').textContent = cache.customers.length;
+  document.getElementById('st-tasks').textContent = cache.jobs.length;
+  document.getElementById('st-kyc').textContent = cache.workers.filter(w => !w.verified).length;
 
-  document.getElementById('st-workers').textContent = totalWorkers;
-  document.getElementById('st-workers-v').textContent = verifiedWorkers + ' verified';
-  document.getElementById('st-customers').textContent = totalCustomers;
-  document.getElementById('st-tasks').textContent = totalTasks;
-  document.getElementById('st-tasks-p').textContent = pendingTasks + ' pending';
-  document.getElementById('st-kyc').textContent = pendingKyc;
-
-  // Recent Tasks Rows
   const recentTasks = [...cache.jobs].reverse().slice(0, 5);
-  const sbMap = { pending:'badge-pending', accepted:'badge-accepted', progress:'badge-progress', done:'badge-done' };
-  document.getElementById('ov-tasks-body').innerHTML = recentTasks.length
-    ? recentTasks.map(r => {
-        const cName = r.users ? `${r.users.first_name} ${r.users.last_name}` : 'Customer Account';
-        return `<tr>
-          <td><strong>${getCategoryName(r.category_id)}</strong><br><span style="color:var(--muted);font-size:0.7rem">${r.title || ''}</span></td>
-          <td>${cName}</td>
-          <td style="color:var(--muted);font-size:.76rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.description || 'No details.'}</td>
-          <td style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">P${r.price}</td>
-          <td><span class="badge ${sbMap[r.status] || 'badge-pending'}">${r.status || 'pending'}</span></td>
-        </tr>`;
-      }).join('')
-    : '<tr><td colspan="5" class="empty">No tasks yet.</td></tr>';
+  document.getElementById('ov-tasks-body').innerHTML = recentTasks.map(r => `<tr>
+    <td>${getCategoryName(r.category_id)}</td>
+    <td>${r.users ? r.users.first_name : 'Customer'}</td>
+    <td>${r.description || ''}</td>
+    <td>P${r.price}</td>
+    <td>${r.status}</td>
+  </tr>`).join('');
 
-  // Recent Worker Profiles Rows
   const recentWorkers = [...cache.workers].reverse().slice(0, 5);
-  document.getElementById('ov-workers-body').innerHTML = recentWorkers.length
-    ? recentWorkers.map(w => {
-        const wName = w.users ? `${w.users.first_name} ${w.users.last_name}` : 'Worker';
-        const wEmail = w.users ? w.users.email : '—';
-        return `<tr>
-          <td>${wName}</td>
-          <td style="color:var(--muted);font-size:.75rem">${wEmail}</td>
-          <td style="color:var(--muted);font-size:.75rem;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${w.bio || '—'}</td>
-          <td>${kycBadge(w.verified)}</td>
-        </tr>`;
-      }).join('')
-    : '<tr><td colspan="4" class="empty">No workers registered yet.</td></tr>';
+  document.getElementById('ov-workers-body').innerHTML = recentWorkers.map(w => `<tr>
+    <td>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker'}</td>
+    <td>${w.bio || ''}</td>
+    <td>${kycBadge(w.verified)}</td>
+  </tr>`).join('');
 }
 
 function renderKYC() {
   const pendingList = cache.workers.filter(w => w.verified === false);
-  const el = document.getElementById('kyc-list');
-  if (!pendingList.length) { el.innerHTML = '<div class="empty"><div class="ei">✓</div><p>No pending KYC onboarding requests.</p></div>'; return; }
-  
-  el.innerHTML = pendingList.map(w => {
-    const wName = w.users ? `${w.users.first_name} ${w.users.last_name}` : 'Worker Profile';
-    const wEmail = w.users ? w.users.email : '—';
-    const wPhone = w.users ? w.users.phone : '—';
-    return `
-      <div style="background:var(--surface);border:1px solid rgba(240,192,64,.2);border-radius:var(--radius);padding:20px 22px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-          <div>
-            <div style="font-family:'Syne',sans-serif;font-size:.93rem;font-weight:800">${wName}</div>
-            <div style="font-size:.76rem;color:var(--muted);margin-top:2px">${wEmail} · ${wPhone}</div>
-            <p style="font-size:0.78rem;color:var(--text);margin-top:6px;font-style:italic">"${w.bio || 'No application statements.'}"</p>
-          </div>
-          <div style="display:flex;gap:8px">
-            <button class="act-btn act-approve" onclick="approveWorker('${w.id}')">✓ Approve &amp; Activate</button>
-            <button class="act-btn act-reject"  onclick="rejectWorker('${w.id}')">✗ Reject Application</button>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
+  document.getElementById('kyc-list').innerHTML = pendingList.map(w => `
+    <div style="background:var(--surface); padding:20px; margin-bottom:12px; border-radius:var(--radius);">
+      <h4>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker'}</h4>
+      <p style="margin: 8px 0;">${w.bio || ''}</p>
+      <button class="act-btn act-approve" onclick="approveWorker('${w.id}')">Approve &amp; Activate</button>
+      <button class="act-btn act-reject" onclick="rejectWorker('${w.id}')">Reject</button>
+    </div>`).join('');
 }
 
-function openRejectModal(id) { rejectTargetId = id; document.getElementById('reject-modal').classList.add('open'); }
-function closeModal() { document.getElementById('reject-modal').classList.remove('open'); rejectTargetId = null; }
-function confirmReject() { closeModal(); toast('Worker setup terminated.', '✗'); }
-
-// 🗲 MANUALLY PROMOTES THE WORKER AND ACTIVATES LOGIN CAPABILITIES AT THE SAME TIME
-async function approveWorker(workerId) {
-  if (!confirm("Are you sure you want to approve and activate this worker profile?")) return;
-
-  // Step 1: Switch verification bool to TRUE inside 'worker_profiles'
-  const { error: profileError } = await window.supabaseClient
-    .from('worker_profiles')
-    .update({ verified: true })
-    .eq('id', workerId);
-
-  // Step 2: Elevate user role string to 'worker' inside base 'users' table
-  const { error: userError } = await window.supabaseClient
-    .from('users')
-    .update({ role: 'worker' })
-    .eq('id', workerId);
-
-  if (profileError || userError) {
-    toast('Error: ' + (profileError?.message || userError?.message), '✕');
-  } else {
-    toast('Worker approved and activated live! 🎉', '✓');
-    refreshData();
-  }
+async function approveWorker(id) {
+  await window.supabaseClient.from('worker_profiles').update({ verified: true }).eq('id', id);
+  await window.supabaseClient.from('users').update({ role: 'worker' }).eq('id', id);
+  refreshData();
 }
 
-async function rejectWorker(workerId) {
-  if (!confirm("Reject and delete this temporary application record?")) return;
-
-  const { error: profileError } = await window.supabaseClient.from('worker_profiles').delete().eq('id', workerId);
-  const { error: userError } = await window.supabaseClient.from('users').delete().eq('id', workerId);
-
-  if (profileError || userError) {
-    toast('Error: ' + (profileError?.message || userError?.message), '✕');
-  } else {
-    toast('Application completely purged.', '🗑');
-    refreshData();
-  }
+async function rejectWorker(id) {
+  await window.supabaseClient.from('worker_profiles').delete().eq('id', id);
+  await window.supabaseClient.from('users').delete().eq('id', id);
+  refreshData();
 }
 
-function renderWorkers(q='') {
-  const all = cache.workers.filter(w => {
-    const name = w.users ? `${w.users.first_name} ${w.users.last_name}`.toLowerCase() : '';
-    const email = w.users ? w.users.email.toLowerCase() : '';
-    return !q || name.includes(q.toLowerCase()) || email.includes(q.toLowerCase());
-  });
-
-  document.getElementById('workers-body').innerHTML = all.length
-    ? all.map(w => {
-        const wName = w.users ? `${w.users.first_name} ${w.users.last_name}` : 'Worker';
-        const wEmail = w.users ? w.users.email : '—';
-        const wPhone = w.users ? w.users.phone : '—';
-        return `<tr>
-          <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${wName}</td>
-          <td style="color:var(--muted);font-size:.75rem">${wEmail}</td>
-          <td style="color:var(--muted);font-size:.75rem">${wPhone}</td>
-          <td style="font-family:'Syne',sans-serif;font-weight:600;color:var(--accent)">${w.completed_jobs || 0}</td>
-          <td>${w.rating ? w.rating.toFixed(1) + '★' : '—'}</td>
-          <td>${kycBadge(w.verified)}</td>
-          <td>
-            ${!w.verified ? `<button class="act-btn act-approve" onclick="approveWorker('${w.id}')">✓ Verify</button> ` : ''}
-            <button class="act-btn act-delete" onclick="deleteWorker('${w.id}')">Delete</button>
-          </td>
-        </tr>`;
-      }).join('')
-    : '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--muted)">No matching records.</td></tr>';
+function renderWorkers() {
+  document.getElementById('workers-body').innerHTML = cache.workers.map(w => `<tr>
+    <td>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker'}</td>
+    <td>${w.completed_jobs || 0}</td>
+    <td>${w.rating || 5}★</td>
+    <td>${kycBadge(w.verified)}</td>
+    <td><button class="act-btn act-delete" onclick="rejectWorker('${w.id}')">Delete</button></td>
+  </tr>`).join('');
 }
 
-function renderCustomers(q='') {
-  const all = cache.customers.filter(c => {
-    const name = `${c.first_name} ${c.last_name}`.toLowerCase();
-    const email = c.email.toLowerCase();
-    return !q || name.includes(q.toLowerCase()) || email.includes(q.toLowerCase());
-  });
-
-  document.getElementById('customers-body').innerHTML = all.length
-    ? all.map(c => `<tr>
-        <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${c.first_name} ${c.last_name}</td>
-        <td style="color:var(--muted);font-size:.75rem">${c.email}</td>
-        <td style="color:var(--muted);font-size:.75rem">${c.phone || '—'}</td>
-        <td><button class="act-btn act-delete" onclick="deleteCustomer('${c.id}')">Delete</button></td>
-      </tr>`).join('')
-    : '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--muted)">No customers found.</td></tr>';
+function renderCustomers() {
+  document.getElementById('customers-body').innerHTML = cache.customers.map(c => `<tr>
+    <td>${c.first_name} ${c.last_name}</td>
+    <td>${c.email}</td>
+    <td><button class="act-btn act-delete" onclick="window.supabaseClient.from('users').delete().eq('id','${c.id}'); refreshData();">Delete</button></td>
+  </tr>`).join('');
 }
 
-function renderTasks(filter='') {
-  let list = cache.jobs;
-  if (filter) list = list.filter(r => r.status === filter);
-  list = [...list].reverse();
-  const sbMap = { pending:'badge-pending', accepted:'badge-accepted', progress:'badge-progress', done:'badge-done' };
-  document.getElementById('tasks-body').innerHTML = list.length
-    ? list.map(r => {
-        const cName = r.users ? `${r.users.first_name} ${r.users.last_name}` : 'Customer';
-        return `<tr>
-          <td><strong>${getCategoryName(r.category_id)}</strong></td>
-          <td style="font-size:.77rem">${cName}</td>
-          <td style="font-size:.75rem;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.description || '—'}</td>
-          <td style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">P${r.price}</td>
-          <td><span class="badge ${sbMap[r.status] || 'badge-pending'}">${r.status || 'pending'}</span></td>
-          <td><button class="act-btn act-delete" onclick="deleteTask(${r.id})">Delete</button></td>
-        </tr>`;
-      }).join('')
-    : '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--muted)">No tasks located.</td></tr>';
-}
-
-function renderNotifs() {
-  const el = document.getElementById('notif-list');
-  if (!cache.activity.length) { el.innerHTML = '<div class="empty"><div class="ei">🔔</div><p>No activity yet.</p></div>'; return; }
-  el.innerHTML = '<div class="notif-list">' + cache.activity.map(n => `
-    <div class="notif-item">
-      <div class="ni-dot"></div>
-      <div><div class="ni-title">${n.title}</div><div class="ni-msg">${n.msg}</div></div>
-    </div>`).join('') + '</div>';
-}
-
-async function deleteWorker(id) {
-  if (!confirm('Purge worker from database?')) return;
-  const { error } = await window.supabaseClient.from('worker_profiles').delete().eq('id', id);
-  if (error) toast(error.message, '✕'); else { toast('Worker deleted.', '🗑'); refreshData(); }
-}
-
-async function deleteCustomer(id) {
-  if (!confirm('Delete customer account?')) return;
-  const { error } = await window.supabaseClient.from('users').delete().eq('id', id);
-  if (error) toast(error.message, '✕'); else { toast('Customer deleted.', '🗑'); refreshData(); }
-}
-
-async function deleteTask(id) {
-  if (!confirm('Delete task trace?')) return;
-  const { error } = await window.supabaseClient.from('jobs').delete().eq('id', id);
-  if (error) toast(error.message, '✕'); else { toast('Task dropped.', '🗑'); refreshData(); }
-}
-
-function saveSettings() {
-  const u = document.getElementById('s-user').value.trim();
-  const p = document.getElementById('s-pass').value;
-  const p2 = document.getElementById('s-pass2').value;
-  if (!u) { toast('Username cannot be empty.','⚠'); return; }
-  if (p && p !== p2) { toast('Passwords do not match.','⚠'); return; }
-  localStorage.setItem('hd_admin_user', u);
-  if (p) localStorage.setItem('hd_admin_pass', p);
-  toast('Credentials saved!','✓');
-}
-
-function toast(text, icon='✓') {
-  const c = document.getElementById('toast-box');
-  const t = document.createElement('div'); t.className = 'toast';
-  t.innerHTML = `<span>${icon}</span> ${text}`;
-  c.appendChild(t); setTimeout(() => t.remove(), 3000);
+function renderTasks() {
+  document.getElementById('tasks-body').innerHTML = cache.jobs.map(r => `<tr>
+    <td>${getCategoryName(r.category_id)}</td>
+    <td>${r.users ? r.users.first_name : 'Customer'}</td>
+    <td>${r.description || ''}</td>
+    <td>P${r.price}</td>
+    <td>${r.status}</td>
+    <td><button class="act-btn act-delete" onclick="window.supabaseClient.from('jobs').delete().eq('id', ${r.id}); refreshData();">Delete</button></td>
+  </tr>`).join('');
 }
 </script>
 </body>
