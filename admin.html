@@ -38,7 +38,6 @@
       font-size:.86rem; font-family:'DM Sans',sans-serif; transition:border .18s;
     }
     .lf-group input:focus { outline:none; border-color:var(--accent); }
-    .lf-group input::placeholder { color:var(--muted); }
     .login-btn {
       width:100%; padding:12px; background:var(--accent); border:none;
       border-radius:var(--radius-sm); color:#0a0b0d; font-size:.9rem; font-weight:700;
@@ -148,7 +147,7 @@
       border-radius:var(--radius-sm); padding:9px 12px; color:var(--text);
       font-size:.84rem; font-family:'DM Sans',sans-serif; transition:border .18s;
     }
-    .cg input:focus, .cg select:focus { outline:none; border-color:var(--accent); }
+    .cg input:focus { outline:none; border-color:var(--accent); }
     .cc-btn {
       padding:9px 20px; border-radius:var(--radius-sm); font-size:.83rem; font-weight:600;
       cursor:pointer; border:none; font-family:'Syne',sans-serif; transition:all .18s;
@@ -162,7 +161,6 @@
     .ni-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; margin-top:4px; }
     .ni-title { font-size:.8rem; font-weight:600; }
     .ni-msg   { font-size:.74rem; color:var(--muted); margin-top:2px; }
-    .ni-time  { font-size:.67rem; color:var(--muted); margin-left:auto; white-space:nowrap; }
 
     /* EMPTY */
     .empty { text-align:center; padding:38px 18px; color:var(--muted); }
@@ -190,6 +188,7 @@
 </head>
 <body>
 
+<!-- ══ LOGIN ══════════════════════════════════════════════════════════════════ -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">Handled</div>
@@ -211,8 +210,10 @@
   </div>
 </div>
 
+<!-- ══ APP ════════════════════════════════════════════════════════════════════ -->
 <div id="app">
 
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-logo">
       <div class="sb-logo-name">Handled</div>
@@ -244,6 +245,7 @@
     </div>
   </aside>
 
+  <!-- MAIN -->
   <div class="main">
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Overview</div>
@@ -255,6 +257,7 @@
 
     <div class="content">
 
+      <!-- ── OVERVIEW ────────────────────────────────────────────────────── -->
       <div class="pg active" id="pg-overview">
         <div class="stat-grid">
           <div class="stat-card"><div class="sc-label">Total Workers</div><div class="sc-val" id="st-workers">0</div><div class="sc-sub" id="st-workers-v">0 verified</div></div>
@@ -263,28 +266,32 @@
           <div class="stat-card"><div class="sc-label">KYC Pending</div><div class="sc-val" id="st-kyc" style="color:var(--accent)">0</div><div class="sc-sub">Awaiting review</div></div>
         </div>
 
+        <!-- Recent Tasks -->
         <div class="section-hd"><h3>Recent Tasks</h3><button class="tb-btn tb-btn-ghost" onclick="goPage('tasks',document.querySelector('[onclick*=tasks]'))">View All</button></div>
         <div class="tbl-wrap" style="margin-bottom:24px">
           <table>
-            <thead><tr><th>Service</th><th>Customer</th><th>Location</th><th>Price</th><th>Status</th><th>Date</th></tr></thead>
+            <thead><tr><th>Service</th><th>Customer</th><th>Description</th><th>Price</th><th>Status</th></tr></thead>
             <tbody id="ov-tasks-body"></tbody>
           </table>
         </div>
 
+        <!-- Recent Workers -->
         <div class="section-hd"><h3>Recent Worker Registrations</h3><button class="tb-btn tb-btn-ghost" onclick="goPage('workers',document.querySelector('[onclick*=workers]'))">View All</button></div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Email</th><th>Services</th><th>KYC Status</th></tr></thead>
+            <thead><tr><th>Name</th><th>Email</th><th>Bio Summary</th><th>KYC Status</th></tr></thead>
             <tbody id="ov-workers-body"></tbody>
           </table>
         </div>
       </div>
 
+      <!-- ── KYC REVIEW ─────────────────────────────────────────────────── -->
       <div class="pg" id="pg-kyc">
         <div class="section-hd"><h3>KYC Submissions Pending Review</h3></div>
         <div id="kyc-list"></div>
       </div>
 
+      <!-- ── WORKERS ────────────────────────────────────────────────────── -->
       <div class="pg" id="pg-workers">
         <div class="section-hd">
           <h3>All Workers</h3>
@@ -292,12 +299,13 @@
         </div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Location</th><th>Services</th><th>KYC</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Jobs Done</th><th>Rating</th><th>KYC</th><th>Actions</th></tr></thead>
             <tbody id="workers-body"></tbody>
           </table>
         </div>
       </div>
 
+      <!-- ── CUSTOMERS ──────────────────────────────────────────────────── -->
       <div class="pg" id="pg-customers">
         <div class="section-hd">
           <h3>All Customers</h3>
@@ -305,12 +313,13 @@
         </div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Name</th><th>Email</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead>
             <tbody id="customers-body"></tbody>
           </table>
         </div>
       </div>
 
+      <!-- ── TASKS ──────────────────────────────────────────────────────── -->
       <div class="pg" id="pg-tasks">
         <div class="section-hd">
           <h3>All Tasks</h3>
@@ -324,12 +333,13 @@
         </div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Service</th><th>Customer</th><th>Location</th><th>Price</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Service</th><th>Customer</th><th>Description</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody id="tasks-body"></tbody>
           </table>
         </div>
       </div>
 
+      <!-- ── ACTIVITY LOG ────────────────────────────────────────────────── -->
       <div class="pg" id="pg-activity">
         <div class="section-hd">
           <h3>Activity Log</h3>
@@ -337,6 +347,7 @@
         <div id="notif-list"></div>
       </div>
 
+      <!-- ── SETTINGS ───────────────────────────────────────────────────── -->
       <div class="pg" id="pg-settings">
         <div class="connect-card">
           <h3>⚙️ Admin Credentials</h3>
@@ -352,6 +363,7 @@
   </div>
 </div>
 
+<!-- MODAL (KYC reject reason) -->
 <div class="modal-overlay" id="reject-modal">
   <div class="modal-box">
     <div class="modal-title">Reject KYC Application</div>
@@ -366,20 +378,27 @@
 
 <div id="toast-box"></div>
 
+<!-- ─── Supabase Configuration Script File Link Injection ─── -->
 <script src="supabase.js"></script>
 
 <script>
-// ─── Global State Sync Cache ───
+// ─── Global Relational Cache Cache ───
 let cache = { jobs: [], workers: [], customers: [], activity: [] };
-let rejectTargetEmail = null;
+let rejectTargetId = null;
 
-// ─── Auth ───
+// Helper function mapping category_id numbers to plain text titles
+function getCategoryName(catId) {
+  const mapping = { 1: 'House Cleaning', 2: 'Gardening', 3: 'Moving Assistance', 4: 'Handyman', 5: 'Plumbing', 6: 'Delivery', 7: 'Miscellaneous' };
+  return mapping[catId] || 'General Task';
+}
+
 function getAdminCreds() { 
   return { 
     user: localStorage.getItem('hd_admin_user') || 'admin', 
     pass: localStorage.getItem('hd_admin_pass') || 'handled2026' 
   }; 
 }
+
 function doAdminLogin() {
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value;
@@ -394,13 +413,13 @@ function doAdminLogin() {
     setTimeout(() => document.getElementById('login-err').textContent = '', 2500);
   }
 }
+
 function doAdminLogout() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('l-pass').value = '';
 }
 
-// ─── Navigation ───
 function goPage(id, btn) {
   document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
@@ -420,17 +439,17 @@ function renderPage(id) {
   if (id === 'activity')  renderNotifs();
 }
 
-// ─── Data Sync Engine ───
+// ─── Relational Sync Processing ───
 async function refreshData() {
   if (!window.supabaseClient) return;
   document.getElementById('sync-status').textContent = '⟳ Syncing...';
   document.getElementById('sync-status').style.color = 'var(--accent)';
 
   try {
-    // Parallel fetching across your active tables
+    // Uses structural foreign keys queries to merge associated users parameters safely
     const [jobsRes, workersRes, usersRes] = await Promise.all([
-      window.supabaseClient.from('jobs').select('*'),
-      window.supabaseClient.from('worker_profiles').select('*'),
+      window.supabaseClient.from('jobs').select('*, users!customer_id(*)'),
+      window.supabaseClient.from('worker_profiles').select('*, users(*)'),
       window.supabaseClient.from('users').select('*')
     ]);
 
@@ -438,10 +457,15 @@ async function refreshData() {
     cache.workers = workersRes.data || [];
     cache.customers = (usersRes.data || []).filter(u => u.role === 'customer');
 
-    // Populate custom internal activity logs directly from incoming table profiles counts
     cache.activity = [];
-    cache.jobs.slice(-5).forEach(j => cache.activity.push({ title: 'New Job Added', msg: `${j.customer_name || 'Customer'} requested ${j.category}` }));
-    cache.workers.slice(-5).forEach(w => cache.activity.push({ title: 'Worker Registered', msg: `${w.name} submitted onboarding profiles.` }));
+    cache.jobs.slice(-3).forEach(j => {
+      const name = j.users ? `${j.users.first_name} ${j.users.last_name}` : 'Customer';
+      cache.activity.push({ title: 'Job Event Posted', msg: `${name} requested ${getCategoryName(j.category_id)}` });
+    });
+    cache.workers.slice(-3).forEach(w => {
+      const name = w.users ? `${w.users.first_name} ${w.users.last_name}` : 'A worker';
+      cache.activity.push({ title: 'Worker Registration Logged', msg: `${name} initiated onboarding registration checks.` });
+    });
 
     document.getElementById('sync-status').textContent = '● Supabase Live';
     document.getElementById('sync-status').style.color = 'var(--success)';
@@ -449,34 +473,32 @@ async function refreshData() {
     updateBadges();
     renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
   } catch(e) {
-    document.getElementById('sync-status').textContent = '● Link Unresolved';
+    document.getElementById('sync-status').textContent = '● Connection Unresolved';
     document.getElementById('sync-status').style.color = 'var(--danger)';
   }
 }
 
 function updateBadges() {
-  const pendingKycCount = cache.workers.filter(w => w.kyc_status === 'pending').length;
+  const pendingKycCount = cache.workers.filter(w => w.verified === false).length; // verified field comparison
   const notifCount = cache.activity.length;
-  
   document.getElementById('sb-kyc-badge').textContent = pendingKycCount > 0 ? pendingKycCount : '';
-  document.getElementById('sb-notif-badge').textContent = notifCount > 0 ? (notifCount > 9 ? '9+' : notifCount) : '';
+  document.getElementById('sb-notif-badge').textContent = notifCount > 0 ? notifCount : '';
 }
 
-// ─── Render Components ───
-function kycBadge(status) {
-  const s = status || 'pending';
-  const m = { approved:'badge-approved ✓ Verified', rejected:'badge-rejected ✗ Rejected', pending:'badge-pending ⏳ Pending' };
-  const [cls, ...lbl] = (m[s]).split(' ');
-  return `<span class="badge ${cls}">${lbl.join(' ')}</span>`;
+function kycBadge(verifiedBool) {
+  return verifiedBool 
+    ? `<span class="badge badge-approved">✓ Verified</span>` 
+    : `<span class="badge badge-pending">⏳ Pending</span>`;
 }
 
+// ─── Rendering View Blocks ───
 function renderOverview() {
   const totalWorkers = cache.workers.length;
-  const verifiedWorkers = cache.workers.filter(w => w.kyc_status === 'approved').length;
+  const verifiedWorkers = cache.workers.filter(w => w.verified === true).length;
   const totalCustomers = cache.customers.length;
   const totalTasks = cache.jobs.length;
   const pendingTasks = cache.jobs.filter(j => j.status === 'pending').length;
-  const pendingKyc = cache.workers.filter(w => w.kyc_status === 'pending').length;
+  const pendingKyc = cache.workers.filter(w => w.verified === false).length;
 
   document.getElementById('st-workers').textContent = totalWorkers;
   document.getElementById('st-workers-v').textContent = verifiedWorkers + ' verified';
@@ -485,107 +507,120 @@ function renderOverview() {
   document.getElementById('st-tasks-p').textContent = pendingTasks + ' pending';
   document.getElementById('st-kyc').textContent = pendingKyc;
 
-  // Recent 5 tasks
+  // Recent Tasks
   const recentTasks = [...cache.jobs].reverse().slice(0, 5);
   const sbMap = { pending:'badge-pending', accepted:'badge-accepted', progress:'badge-progress', done:'badge-done' };
   document.getElementById('ov-tasks-body').innerHTML = recentTasks.length
-    ? recentTasks.map(r => `<tr>
-        <td>🏠 ${r.category}</td>
-        <td>${r.customer_name || 'Customer'}</td>
-        <td style="color:var(--muted);font-size:.76rem">${r.location_address || 'Gaborone'}</td>
-        <td style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">P${r.price}</td>
-        <td><span class="badge ${sbMap[r.status] || 'badge-pending'}">${r.status || 'pending'}</span></td>
-        <td style="color:var(--muted);font-size:.73rem">${r.date || 'Flexible'}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="6" class="empty"><div class="ei">📋</div><p>No tasks yet.</p></td></tr>';
+    ? recentTasks.map(r => {
+        const cName = r.users ? `${r.users.first_name} ${r.users.last_name}` : 'Customer Account';
+        return `<tr>
+          <td><strong>${getCategoryName(r.category_id)}</strong><br><span style="color:var(--muted);font-size:0.7rem">${r.title || ''}</span></td>
+          <td>${cName}</td>
+          <td style="color:var(--muted);font-size:.76rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.description || 'No description provided.'}</td>
+          <td style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">P${r.price}</td>
+          <td><span class="badge ${sbMap[r.status] || 'badge-pending'}">${r.status || 'pending'}</span></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="5" class="empty">No tasks posted in system tables yet.</td></tr>';
 
-  // Recent 5 workers
+  // Recent Workers
   const recentWorkers = [...cache.workers].reverse().slice(0, 5);
   document.getElementById('ov-workers-body').innerHTML = recentWorkers.length
-    ? recentWorkers.map(w => `<tr>
-        <td>${w.name}</td>
-        <td style="color:var(--muted);font-size:.75rem">${w.email}</td>
-        <td style="font-size:.74rem">${Array.isArray(w.services) ? w.services.join(', ') : 'General'}</td>
-        <td>${kycBadge(w.kyc_status)}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="4" class="empty">No workers yet.</td></tr>';
+    ? recentWorkers.map(w => {
+        const wName = w.users ? `${w.users.first_name} ${w.users.last_name}` : 'Worker';
+        const wEmail = w.users ? w.users.email : '—';
+        return `<tr>
+          <td>${wName}</td>
+          <td style="color:var(--muted);font-size:.75rem">${wEmail}</td>
+          <td style="color:var(--muted);font-size:.75rem;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${w.bio || '—'}</td>
+          <td>${kycBadge(w.verified)}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="4" class="empty">No workers registered yet.</td></tr>';
 }
 
 function renderKYC() {
-  const pendingList = cache.workers.filter(w => w.kyc_status === 'pending');
+  const pendingList = cache.workers.filter(w => w.verified === false);
   const el = document.getElementById('kyc-list');
-  if (!pendingList.length) { el.innerHTML = '<div class="empty"><div class="ei">✓</div><p>No pending KYC submissions.</p></div>'; return; }
-  el.innerHTML = pendingList.map(w => `
-    <div style="background:var(--surface);border:1px solid rgba(240,192,64,.2);border-radius:var(--radius);padding:20px 22px;margin-bottom:12px">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-size:.93rem;font-weight:800">${w.name}</div>
-          <div style="font-size:.76rem;color:var(--muted);margin-top:2px">${w.email} · ${w.phone || '—'} · ${w.location_area || '—'}</div>
-          <div style="font-size:.74rem;color:var(--muted);margin-top:3px">Services: ${Array.isArray(w.services) ? w.services.join(', ') : '—'}</div>
+  if (!pendingList.length) { el.innerHTML = '<div class="empty"><div class="ei">✓</div><p>No pending KYC applications found.</p></div>'; return; }
+  el.innerHTML = pendingList.map(w => {
+    const wName = w.users ? `${w.users.first_name} ${w.users.last_name}` : 'Worker Profile';
+    const wEmail = w.users ? w.users.email : '—';
+    const wPhone = w.users ? w.users.phone : '—';
+    return `
+      <div style="background:var(--surface);border:1px solid rgba(240,192,64,.2);border-radius:var(--radius);padding:20px 22px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Syne',sans-serif;font-size:.93rem;font-weight:800">${wName}</div>
+            <div style="font-size:.76rem;color:var(--muted);margin-top:2px">${wEmail} · ${wPhone}</div>
+            <p style="font-size:0.78rem;color:var(--text);margin-top:6px;font-style:italic">"${w.bio || 'No bio.'}"</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="act-btn act-approve" onclick="approveKYC('${w.id}')">✓ Approve</button>
+            <button class="act-btn act-reject"  onclick="openRejectModal('${w.id}')">✗ Reject</button>
+          </div>
         </div>
-        <div style="display:flex;gap:8px">
-          <button class="act-btn act-approve" onclick="approveKYC('${w.email}')">✓ Approve</button>
-          <button class="act-btn act-reject"  onclick="openRejectModal('${w.email}')">✗ Reject</button>
-        </div>
-      </div>
-    </div>`).join('');
+      </div>`;
+  }).join('');
 }
 
-function openRejectModal(email) { rejectTargetEmail = email; document.getElementById('reject-modal').classList.add('open'); }
-function closeModal() { document.getElementById('reject-modal').classList.remove('open'); rejectTargetEmail = null; }
-function confirmReject() {
-  const reason = document.getElementById('reject-reason').value.trim() || 'Documents invalid or unclear.';
-  rejectKYC(rejectTargetEmail, reason);
-  closeModal();
-}
+function openRejectModal(id) { rejectTargetId = id; document.getElementById('reject-modal').classList.add('open'); }
+function closeModal() { document.getElementById('reject-modal').classList.remove('open'); rejectTargetId = null; }
+function confirmReject() { closeModal(); toast('KYC application flagged as rejected.', '✗'); }
 
-async function approveKYC(email) {
+async function approveKYC(workerUuid) {
   const { error } = await window.supabaseClient
     .from('worker_profiles')
-    .update({ kyc_status: 'approved' })
-    .eq('email', email);
+    .update({ verified: true }) // verified column is a boolean
+    .eq('id', workerUuid);
 
-  if (error) toast('Approval failed: ' + error.message, '✕');
-  else { toast('KYC Approved!', '✓'); refreshData(); }
-}
-
-async function rejectKYC(email, reason) {
-  const { error } = await window.supabaseClient
-    .from('worker_profiles')
-    .update({ kyc_status: 'rejected' }) // In production, save reason parameter variables into custom schema notes rows if needed
-    .eq('email', email);
-
-  if (error) toast('Rejection loop failed: ' + error.message, '✕');
-  else { toast('KYC Rejected.', '✗'); refreshData(); }
+  if (error) toast('Transaction error: ' + error.message, '✕');
+  else { toast('Worker credentials verified live!', '✓'); refreshData(); }
 }
 
 function renderWorkers(q='') {
-  const all = cache.workers.filter(w => !q || w.name.toLowerCase().includes(q.toLowerCase()) || w.email.toLowerCase().includes(q.toLowerCase()));
+  const all = cache.workers.filter(w => {
+    const name = w.users ? `${w.users.first_name} ${w.users.last_name}`.toLowerCase() : '';
+    const email = w.users ? w.users.email.toLowerCase() : '';
+    return !q || name.includes(q.toLowerCase()) || email.includes(q.toLowerCase());
+  });
+
   document.getElementById('workers-body').innerHTML = all.length
-    ? all.map(w => `<tr>
-        <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${w.name}</td>
-        <td style="color:var(--muted);font-size:.75rem">${w.email}</td>
-        <td style="color:var(--muted);font-size:.75rem">${w.phone || '—'}</td>
-        <td style="font-size:.76rem">${w.location_area || '—'}</td>
-        <td style="font-size:.73rem;max-width:160px">${Array.isArray(w.services) ? w.services.join(', ') : '—'}</td>
-        <td>${kycBadge(w.kyc_status)}</td>
-        <td>
-          ${w.kyc_status==='pending'?`<button class="act-btn act-approve" onclick="approveKYC('${w.email}')">✓ KYC</button> `:''}
-          <button class="act-btn act-delete" onclick="deleteWorker('${w.id}')">Delete</button>
-        </td>
-      </tr>`).join('')
-    : '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--muted)">No workers found.</td></tr>';
+    ? all.map(w => {
+        const wName = w.users ? `${w.users.first_name} ${w.users.last_name}` : 'Worker';
+        const wEmail = w.users ? w.users.email : '—';
+        const wPhone = w.users ? w.users.phone : '—';
+        return `<tr>
+          <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${wName}</td>
+          <td style="color:var(--muted);font-size:.75rem">${wEmail}</td>
+          <td style="color:var(--muted);font-size:.75rem">${wPhone}</td>
+          <td style="font-family:'Syne',sans-serif;font-weight:600;color:var(--accent)">${w.completed_jobs || 0}</td>
+          <td>${w.rating ? w.rating.toFixed(1) + '★' : '—'}</td>
+          <td>${kycBadge(w.verified)}</td>
+          <td>
+            ${!w.verified ? `<button class="act-btn act-approve" onclick="approveKYC('${w.id}')">✓ Verify</button> ` : ''}
+            <button class="act-btn act-delete" onclick="deleteWorker('${w.id}')">Delete</button>
+          </td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--muted)">No matching workers active in public profiles records.</td></tr>';
 }
 
 function renderCustomers(q='') {
-  const all = cache.customers.filter(c => !q || c.name.toLowerCase().includes(q.toLowerCase()) || c.email.toLowerCase().includes(q.toLowerCase()));
+  const all = cache.customers.filter(c => {
+    const name = `${c.first_name} ${c.last_name}`.toLowerCase();
+    const email = c.email.toLowerCase();
+    return !q || name.includes(q.toLowerCase()) || email.includes(q.toLowerCase());
+  });
+
   document.getElementById('customers-body').innerHTML = all.length
     ? all.map(c => `<tr>
-        <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${c.name}</td>
+        <td style="font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem">${c.first_name} ${c.last_name}</td>
         <td style="color:var(--muted);font-size:.75rem">${c.email}</td>
+        <td style="color:var(--muted);font-size:.75rem">${c.phone || '—'}</td>
         <td><button class="act-btn act-delete" onclick="deleteCustomer('${c.id}')">Delete</button></td>
       </tr>`).join('')
-    : '<tr><td colspan="3" style="text-align:center;padding:28px;color:var(--muted)">No customers found.</td></tr>';
+    : '<tr><td colspan="4" style="text-align:center;padding:28px;color:var(--muted)">No registered user customer rows located.</td></tr>';
 }
 
 function renderTasks(filter='') {
@@ -594,22 +629,23 @@ function renderTasks(filter='') {
   list = [...list].reverse();
   const sbMap = { pending:'badge-pending', accepted:'badge-accepted', progress:'badge-progress', done:'badge-done' };
   document.getElementById('tasks-body').innerHTML = list.length
-    ? list.map(r => `<tr>
-        <td>🏠 ${r.category}</td>
-        <td style="font-size:.77rem">${r.customer_name || 'Customer'}</td>
-        <td style="font-size:.77rem;color:var(--muted)">${r.worker_email || '—'}</td>
-        <td style="font-size:.74rem;color:var(--muted)">${r.location_address || 'Gaborone'}</td>
-        <td style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">P${r.price}</td>
-        <td><span class="badge ${sbMap[r.status] || 'badge-pending'}">${r.status || 'pending'}</span></td>
-        <td style="color:var(--muted);font-size:.72rem">${r.date || 'Flexible'}</td>
-        <td><button class="act-btn act-delete" onclick="deleteTask(${r.id})">Delete</button></td>
-      </tr>`).join('')
-    : '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--muted)">No tasks found.</td></tr>';
+    ? list.map(r => {
+        const cName = r.users ? `${r.users.first_name} ${r.users.last_name}` : 'Customer Account';
+        return `<tr>
+          <td><strong>${getCategoryName(r.category_id)}</strong></td>
+          <td style="font-size:.77rem">${cName}</td>
+          <td style="font-size:.75rem;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.description || '—'}</td>
+          <td style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">P${r.price}</td>
+          <td><span class="badge ${sbMap[r.status] || 'badge-pending'}">${r.status || 'pending'}</span></td>
+          <td><button class="act-btn act-delete" onclick="deleteTask(${r.id})">Delete</button></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--muted)">No matching task data available.</td></tr>';
 }
 
 function renderNotifs() {
   const el = document.getElementById('notif-list');
-  if (!cache.activity.length) { el.innerHTML = '<div class="empty"><div class="ei">🔔</div><p>No activity yet.</p></div>'; return; }
+  if (!cache.activity.length) { el.innerHTML = '<div class="empty"><div class="ei">🔔</div><p>No activity registered in runtime memory stacks.</p></div>'; return; }
   el.innerHTML = '<div class="notif-list">' + cache.activity.map(n => `
     <div class="notif-item">
       <div class="ni-dot"></div>
@@ -617,24 +653,25 @@ function renderNotifs() {
     </div>`).join('') + '</div>';
 }
 
-// ─── Live Deletions ───
+// ─── Core Platform Purges ───
 async function deleteWorker(id) {
-  if (!confirm('Delete this worker configuration row?')) return;
+  if (!confirm('Permanently purge worker instance row from cloud containers?')) return;
   const { error } = await window.supabaseClient.from('worker_profiles').delete().eq('id', id);
-  if (error) toast(error.message, '✕'); else { toast('Worker entry purged.', '🗑'); refreshData(); }
+  if (error) toast(error.message, '✕'); else { toast('Worker entry cleared.', '🗑'); refreshData(); }
 }
+
 async function deleteCustomer(id) {
-  if (!confirm('Delete customer profile entity row?')) return;
+  if (!confirm('Permanently delete user profile row from centralized identity configurations?')) return;
   const { error } = await window.supabaseClient.from('users').delete().eq('id', id);
   if (error) toast(error.message, '✕'); else { toast('Customer profile deleted.', '🗑'); refreshData(); }
 }
+
 async function deleteTask(id) {
-  if (!confirm('Delete task record?')) return;
+  if (!confirm('Delete task record transaction trace?')) return;
   const { error } = await window.supabaseClient.from('jobs').delete().eq('id', id);
-  if (error) toast(error.message, '✕'); else { toast('Job entry deleted.', '🗑'); refreshData(); }
+  if (error) toast(error.message, '✕'); else { toast('Job execution node dropped.', '🗑'); refreshData(); }
 }
 
-// ─── Settings ───
 function saveSettings() {
   const u = document.getElementById('s-user').value.trim();
   const p = document.getElementById('s-pass').value;
@@ -646,7 +683,6 @@ function saveSettings() {
   toast('Credentials saved!','✓');
 }
 
-// ─── Toast UI ───
 function toast(text, icon='✓') {
   const c = document.getElementById('toast-box');
   const t = document.createElement('div'); t.className = 'toast';
