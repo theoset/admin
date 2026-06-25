@@ -17,7 +17,10 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; }
 
-    #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; width:100%; background:radial-gradient(ellipse 70% 50% at 50% 40%, #1a1000, var(--bg) 70%); }
+    #login-screen {
+      display:flex; align-items:center; justify-content:center; min-height:100vh; width:100%;
+      background:radial-gradient(ellipse 70% 50% at 50% 40%, #1a1000, var(--bg) 70%);
+    }
     .login-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:38px 34px; width:100%; max-width:380px; }
     .login-logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); margin-bottom:5px; }
     .login-sub  { font-size:.78rem; color:var(--muted); margin-bottom:26px; }
@@ -113,7 +116,7 @@
       <div class="topbar-title" id="topbar-title">Overview</div>
       <div class="topbar-actions">
         <button class="tb-btn tb-btn-ghost" onclick="refreshData()">↻ Refresh</button>
-        <span id="sync-status">● Supabase Live</span>
+        <span id="sync-status" style="font-size:.72rem;color:var(--accent)">● Syncing...</span>
       </div>
     </div>
 
@@ -139,6 +142,7 @@
   </div>
 </div>
 
+<div id="toast-box"></div>
 <script src="supabase.js"></script>
 
 <script>
@@ -170,21 +174,37 @@ function renderPage(id) {
 }
 
 async function refreshData() {
-  if (!window.supabaseClient) return;
+  const statusEl = document.getElementById('sync-status');
   
-  // 🌟 FIX: Query worker_profiles joining the matching 'user_id' foreign key mapping relation
-  const [jobsRes, workersRes, usersRes] = await Promise.all([
-    window.supabaseClient.from('jobs').select('*, users!customer_id(*)'),
-    window.supabaseClient.from('worker_profiles').select('*, users:user_id(*)'),
-    window.supabaseClient.from('users').select('*')
-  ]);
+  // 🚨 DEFENSIVE CHECK: Warn user instantly if the connection module is missing
+  if (!window.supabaseClient) {
+    statusEl.textContent = '● Missing supabase.js File';
+    statusEl.style.color = 'var(--danger)';
+    alert("Error: 'window.supabaseClient' is missing. Make sure your 'supabase.js' credentials config file exists in this directory and is named exactly 'supabase.js'.");
+    return;
+  }
 
-  cache.jobs = jobsRes.data || [];
-  cache.workers = workersRes.data || [];
-  cache.customers = (usersRes.data || []).filter(u => u.role === 'customer');
+  try {
+    const [jobsRes, workersRes, usersRes] = await Promise.all([
+      window.supabaseClient.from('jobs').select('*, users!customer_id(*)'),
+      window.supabaseClient.from('worker_profiles').select('*, users(*)'),
+      window.supabaseClient.from('users').select('*')
+    ]);
 
-  updateBadges();
-  renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
+    cache.jobs = jobsRes.data || [];
+    cache.workers = workersRes.data || [];
+    cache.customers = (usersRes.data || []).filter(u => u.role === 'customer');
+
+    statusEl.textContent = '● Supabase Live';
+    statusEl.style.color = 'var(--success)';
+
+    updateBadges();
+    renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
+  } catch (err) {
+    statusEl.textContent = '● Sync Query Failed';
+    statusEl.style.color = 'var(--danger)';
+    console.error(err);
+  }
 }
 
 function updateBadges() {
@@ -241,7 +261,6 @@ function renderKYC() {
 
 async function approveWorker(id) {
   if(!confirm("Approve worker profile?")) return;
-  // Promotes worker state cleanly inside both profiles and user authentication states
   await window.supabaseClient.from('worker_profiles').update({ verified: true }).eq('id', id);
   await window.supabaseClient.from('users').update({ role: 'worker' }).eq('id', id);
   refreshData();
