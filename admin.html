@@ -133,7 +133,7 @@
   </div>
 </div>
 
-<script src="supabase.js"></script>
+<script id="sb-script" src="supabase.js"></script>
 
 <script>
 let cache = { jobs: [], workers: [], customers: [] };
@@ -170,22 +170,30 @@ async function refreshData() {
   if (!db) {
     statusEl.textContent = '● Config Missing';
     statusEl.style.color = 'var(--danger)';
+    alert("CRITICAL CONNECTION FAILURE:\nCould not read your 'supabase.js' initialization file.\nMake sure the file named exactly 'supabase.js' is stored in the same folder as this 'admin.html' page.");
     return;
   }
 
   try {
-    // Fetch base tables completely flat to bypass any inner join constraints
+    statusEl.textContent = '⟳ Fetching...';
+    
+    // Flatten selects completely to ensure it never crashes on inner join constraint mismatches
     const [jobsRes, workersRes, usersRes] = await Promise.all([
       db.from('jobs').select('*'),
       db.from('worker_profiles').select('*'),
       db.from('users').select('*')
     ]);
 
+    // Handle potential query execution errors gracefully
+    if (jobsRes.error) { alert("Jobs Query Failed: " + jobsRes.error.message); return; }
+    if (workersRes.error) { alert("Worker Profiles Query Failed: " + workersRes.error.message); return; }
+    if (usersRes.error) { alert("Users Query Failed: " + usersRes.error.message); return; }
+
     const allUsers = usersRes.data || [];
     const rawJobs = jobsRes.data || [];
     const rawWorkers = workersRes.data || [];
 
-    // Map fields cleanly in JavaScript logic memory 
+    // Memory structural matching
     cache.customers = allUsers.filter(u => u.role === 'customer');
     
     cache.jobs = rawJobs.map(job => {
@@ -194,7 +202,7 @@ async function refreshData() {
     });
 
     cache.workers = rawWorkers.map(worker => {
-      // Look up parent table data by matching user_id parameters safely
+      // Handles any permutation of schema primary configurations cleanly
       worker.users = allUsers.find(u => u.id === worker.user_id || u.id === worker.id);
       return worker;
     });
@@ -203,11 +211,11 @@ async function refreshData() {
     statusEl.style.color = 'var(--success)';
 
     updateBadges();
-    renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
+    renderPage('overview');
   } catch (err) {
-    statusEl.textContent = '● Query Error';
+    statusEl.textContent = '● System Crash';
     statusEl.style.color = 'var(--danger)';
-    console.error(err);
+    alert("CRITICAL REFRESH EXCEPTION:\n" + err.message);
   }
 }
 
