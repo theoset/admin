@@ -77,7 +77,6 @@
     .act-approve { background:rgba(74,222,128,.15); color:var(--success); border:1px solid rgba(74,222,128,.3); }
     .act-reject  { background:rgba(248,113,113,.12); color:var(--danger); border:1px solid rgba(248,113,113,.3); }
     .act-delete  { background:transparent; color:var(--muted); border:1px solid var(--border); }
-    #toast-box { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:7px; }
   </style>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
@@ -113,7 +112,7 @@
       <div class="topbar-title" id="topbar-title">Overview</div>
       <div class="topbar-actions">
         <button class="tb-btn tb-btn-ghost" onclick="refreshData()">↻ Refresh</button>
-        <span id="sync-status" style="font-size:.72rem;color:var(--accent)">● Connecting...</span>
+        <span id="sync-status" style="font-size:.72rem;color:var(--accent)">● Syncing...</span>
       </div>
     </div>
 
@@ -139,7 +138,6 @@
   </div>
 </div>
 
-<div id="toast-box"></div>
 <script src="supabase.js"></script>
 
 <script>
@@ -172,22 +170,20 @@ function renderPage(id) {
 
 async function refreshData() {
   const statusEl = document.getElementById('sync-status');
+  const db = window.supabaseClient || window.supabase;
   
-  // 🌟 FIX: Check both common initialization names so it finds your client instantly
-  const client = window.supabaseClient || window.supabase;
-  
-  if (!client) {
-    statusEl.textContent = '● Disconnected';
+  if (!db) {
+    statusEl.textContent = '● Configuration File Missing';
     statusEl.style.color = 'var(--danger)';
-    alert("Database Connection Error: Could not find 'window.supabaseClient' or 'window.supabase'. Please check that your 'supabase.js' credentials file is located in this exact folder and successfully imported.");
     return;
   }
 
   try {
+    // 🌟 QUERY FIX: Tells Supabase to find foreign keys via explicit user_id columns mapping
     const [jobsRes, workersRes, usersRes] = await Promise.all([
-      client.from('jobs').select('*, users!customer_id(*)'),
-      client.from('worker_profiles').select('*, users(*)'),
-      client.from('users').select('*')
+      db.from('jobs').select('*, users!customer_id(*)'),
+      db.from('worker_profiles').select('*, users!user_id(*)'),
+      db.from('users').select('*')
     ]);
 
     cache.jobs = jobsRes.data || [];
@@ -200,7 +196,7 @@ async function refreshData() {
     updateBadges();
     renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
   } catch (err) {
-    statusEl.textContent = '● Query Error';
+    statusEl.textContent = '● Query Connection Error';
     statusEl.style.color = 'var(--danger)';
     console.error(err);
   }
@@ -260,17 +256,17 @@ function renderKYC() {
 
 async function approveWorker(id) {
   if(!confirm("Approve worker profile?")) return;
-  const client = window.supabaseClient || window.supabase;
-  await client.from('worker_profiles').update({ verified: true }).eq('id', id);
-  await client.from('users').update({ role: 'worker' }).eq('id', id);
+  const db = window.supabaseClient || window.supabase;
+  await db.from('worker_profiles').update({ verified: true }).eq('id', id);
+  await db.from('users').update({ role: 'worker' }).eq('id', id);
   refreshData();
 }
 
 async function rejectWorker(id) {
   if(!confirm("Purge worker record application?")) return;
-  const client = window.supabaseClient || window.supabase;
-  await client.from('worker_profiles').delete().eq('id', id);
-  await client.from('users').delete().eq('id', id);
+  const db = window.supabaseClient || window.supabase;
+  await db.from('worker_profiles').delete().eq('id', id);
+  await db.from('users').delete().eq('id', id);
   refreshData();
 }
 
@@ -288,7 +284,7 @@ function renderCustomers() {
   document.getElementById('customers-body').innerHTML = cache.customers.map(c => `<tr>
     <td>${c.first_name} ${c.last_name}</td>
     <td>${c.email}</td>
-    <td><button class="act-btn act-delete" onclick="const client = window.supabaseClient || window.supabase; client.from('users').delete().eq('id','${c.id}'); refreshData();">Delete</button></td>
+    <td><button class="act-btn act-delete" onclick="const db = window.supabaseClient || window.supabase; db.from('users').delete().eq('id','${c.id}'); refreshData();">Delete</button></td>
   </tr>`).join('');
 }
 
@@ -299,7 +295,7 @@ function renderTasks() {
     <td>${r.description || ''}</td>
     <td>P${r.price}</td>
     <td>${r.status}</td>
-    <td><button class="act-btn act-delete" onclick="const client = window.supabaseClient || window.supabase; client.from('jobs').delete().eq('id', ${r.id}); refreshData();">Delete</button></td>
+    <td><button class="act-btn act-delete" onclick="const db = window.supabaseClient || window.supabase; db.from('jobs').delete().eq('id', ${r.id}); refreshData();">Delete</button></td>
   </tr>`).join('');
 }
 </script>
