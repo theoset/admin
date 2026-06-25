@@ -17,10 +17,7 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; }
 
-    #login-screen {
-      display:flex; align-items:center; justify-content:center; min-height:100vh; width:100%;
-      background:radial-gradient(ellipse 70% 50% at 50% 40%, #1a1000, var(--bg) 70%);
-    }
+    #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; width:100%; background:radial-gradient(ellipse 70% 50% at 50% 40%, #1a1000, var(--bg) 70%); }
     .login-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:38px 34px; width:100%; max-width:380px; }
     .login-logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); margin-bottom:5px; }
     .login-sub  { font-size:.78rem; color:var(--muted); margin-bottom:26px; }
@@ -42,13 +39,7 @@
     .sb-link { display:flex; align-items:center; gap:9px; padding:9px 11px; border-radius:var(--radius-sm); font-size:.81rem; color:var(--muted); cursor:pointer; transition:all .18s; margin-bottom:2px; border:none; background:transparent; width:100%; text-align:left; }
     .sb-link:hover { color:var(--text); background:var(--surface2); }
     .sb-link.active { color:var(--accent); background:rgba(240,192,64,.09); }
-    .sb-link .si { font-size:.9rem; }
     .sb-link .badge { margin-left:auto; background:var(--danger); color:#fff; padding:1px 6px; border-radius:99px; font-size:.62rem; font-weight:700; }
-    .sb-bottom { padding:14px 10px; border-top:1px solid var(--border); }
-    .sb-user { display:flex; align-items:center; gap:9px; padding:8px 11px; border-radius:var(--radius-sm); background:var(--surface2); }
-    .sb-avatar { width:30px; height:30px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:.8rem; font-weight:800; color:#0a0b0d; }
-    .sb-user-name { font-size:.76rem; font-weight:500; }
-    .sb-user-role { font-size:.64rem; color:var(--muted); }
 
     .main { margin-left:var(--sidebar); flex:1; min-height:100vh; display:flex; flex-direction:column; }
     .topbar { position:sticky; top:0; z-index:50; background:rgba(10,11,13,.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); padding:0 30px; display:flex; align-items:center; justify-content:space-between; height:58px; }
@@ -76,38 +67,16 @@
     thead tr { background:var(--surface2); }
     th { padding:10px 14px; font-size:.69rem; font-weight:700; color:var(--muted); text-align:left; text-transform:uppercase; letter-spacing:.07em; border-bottom:1px solid var(--border); }
     td { padding:11px 14px; font-size:.8rem; border-bottom:1px solid var(--border); vertical-align:middle; }
-    tr:last-child td { border-bottom:none; }
-    tbody tr { transition:background .15s; }
-    tbody tr:hover { background:rgba(255,255,255,.02); }
 
     .badge { display:inline-flex; align-items:center; gap:3px; padding:3px 9px; border-radius:99px; font-size:.67rem; font-weight:700; }
     .badge-pending  { background:rgba(240,192,64,.15); color:var(--accent); }
     .badge-approved { background:rgba(74,222,128,.15); color:var(--success); }
     .badge-rejected { background:rgba(248,113,113,.15); color:var(--danger); }
-    .badge-done      { background:rgba(74,222,128,.12); color:var(--success); border:1px solid rgba(74,222,128,.25); }
 
     .act-btn { padding:4px 10px; border-radius:6px; font-size:.72rem; font-weight:600; cursor:pointer; border:none; transition:all .18s; }
     .act-approve { background:rgba(74,222,128,.15); color:var(--success); border:1px solid rgba(74,222,128,.3); }
-    .act-approve:hover { background:rgba(74,222,128,.28); }
     .act-reject  { background:rgba(248,113,113,.12); color:var(--danger); border:1px solid rgba(248,113,113,.3); }
-    .act-reject:hover  { background:rgba(248,113,113,.22); }
     .act-delete  { background:transparent; color:var(--muted); border:1px solid var(--border); }
-    .act-delete:hover  { color:var(--danger); border-color:rgba(248,113,113,.5); }
-
-    .cg { margin-bottom:12px; }
-    .cg label { display:block; font-size:.74rem; color:var(--muted); margin-bottom:5px; font-weight:500; }
-    .cg input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 12px; color:var(--text); font-size:.84rem; }
-    .cc-btn { padding:9px 20px; border-radius:var(--radius-sm); font-size:.83rem; font-weight:600; cursor:pointer; border:none; transition:all .18s; }
-    .cc-primary { background:var(--accent); color:#0a0b0d; }
-
-    .notif-list { display:flex; flex-direction:column; gap:8px; }
-    .notif-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 15px; display:flex; gap:12px; align-items:flex-start; }
-    .ni-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; margin-top:4px; }
-    .ni-title { font-size:.8rem; font-weight:600; }
-    .ni-msg   { font-size:.74rem; color:var(--muted); margin-top:2px; }
-    .empty { text-align:center; padding:38px 18px; color:var(--muted); }
-    .empty .ei { font-size:1.8rem; margin-bottom:9px; }
-    .toast { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:11px 15px; font-size:.83rem; display:flex; align-items:center; gap:8px; max-width:280px; animation:fadeIn .22s ease; }
     #toast-box { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:7px; }
   </style>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -118,14 +87,8 @@
   <div class="login-box">
     <div class="login-logo">Handled</div>
     <div class="login-sub">Admin Panel · Restricted Access</div>
-    <div class="lf-group">
-      <label>Admin Username</label>
-      <input type="text" id="l-user" placeholder="admin" autocomplete="username" />
-    </div>
-    <div class="lf-group">
-      <label>Password</label>
-      <input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()" />
-    </div>
+    <div class="lf-group"><label>Admin Username</label><input type="text" id="l-user" placeholder="admin" /></div>
+    <div class="lf-group"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()" /></div>
     <button class="login-btn" onclick="doAdminLogin()">Login →</button>
     <div class="login-err" id="login-err"></div>
   </div>
@@ -136,15 +99,12 @@
     <div class="sb-logo"><div class="sb-logo-name">Handled</div><div class="sb-logo-tag">Admin Dashboard</div></div>
     <nav class="sb-nav">
       <div class="sb-section">Overview</div>
-      <button class="sb-link active" onclick="goPage('overview',this)"><span class="si">📊</span> Overview</button>
-      <button class="sb-link" onclick="goPage('activity',this)"><span class="si">🔔</span> Activity Log <span class="badge" id="sb-notif-badge"></span></button>
+      <button class="sb-link active" onclick="goPage('overview',this)">📊 Overview</button>
       <div class="sb-section">Management</div>
-      <button class="sb-link" onclick="goPage('kyc',this)"><span class="si">🪪</span> KYC Review <span class="badge" id="sb-kyc-badge"></span></button>
-      <button class="sb-link" onclick="goPage('workers',this)"><span class="si">👷</span> Workers</button>
-      <button class="sb-link" onclick="goPage('customers',this)"><span class="si">🧑</span> Customers</button>
-      <button class="sb-link" onclick="goPage('tasks',this)"><span class="si">📋</span> Tasks</button>
-      <div class="sb-section">System</div>
-      <button class="sb-link" onclick="goPage('settings',this)"><span class="si">⚙️</span> Settings</button>
+      <button class="sb-link" id="sb-kyc-link" onclick="goPage('kyc',this)">🪪 KYC Review <span class="badge" id="sb-kyc-badge"></span></button>
+      <button class="sb-link" onclick="goPage('workers',this)">👷 Workers</button>
+      <button class="sb-link" onclick="goPage('customers',this)">🧑 Customers</button>
+      <button class="sb-link" onclick="goPage('tasks',this)">📋 Tasks</button>
     </nav>
   </aside>
 
@@ -153,7 +113,7 @@
       <div class="topbar-title" id="topbar-title">Overview</div>
       <div class="topbar-actions">
         <button class="tb-btn tb-btn-ghost" onclick="refreshData()">↻ Refresh</button>
-        <span id="sync-status" style="font-size:.72rem;color:var(--muted)">● Supabase Live</span>
+        <span id="sync-status">● Supabase Live</span>
       </div>
     </div>
 
@@ -162,78 +122,27 @@
         <div class="stat-grid">
           <div class="stat-card"><div class="sc-label">Total Workers</div><div class="sc-val" id="st-workers">0</div><div class="sc-sub" id="st-workers-v">0 verified</div></div>
           <div class="stat-card"><div class="sc-label">Total Customers</div><div class="sc-val" id="st-customers">0</div><div class="sc-sub">Registered accounts</div></div>
-          <div class="stat-card"><div class="sc-label">Total Tasks</div><div class="sc-val" id="st-tasks">0</div><div class="sc-sub" id="st-tasks-p">0 pending</div></div>
+          <div class="stat-card"><div class="sc-label">Total Tasks</div><div class="sc-val" id="st-tasks">0</div><div class="sc-sub">0 pending</div></div>
           <div class="stat-card"><div class="sc-label">KYC Pending</div><div class="sc-val" id="st-kyc" style="color:var(--accent)">0</div><div class="sc-sub">Awaiting review</div></div>
         </div>
-
         <div class="section-hd"><h3>Recent Tasks</h3></div>
-        <div class="tbl-wrap" style="margin-bottom:24px">
-          <table>
-            <thead><tr><th>Service</th><th>Customer</th><th>Description</th><th>Price</th><th>Status</th></tr></thead>
-            <tbody id="ov-tasks-body"></tbody>
-          </table>
-        </div>
-
+        <div class="tbl-wrap" style="margin-bottom:24px"><table><thead><tr><th>Service</th><th>Customer</th><th>Description</th><th>Price</th><th>Status</th></tr></thead><tbody id="ov-tasks-body"></tbody></table></div>
         <div class="section-hd"><h3>Recent Worker Registrations</h3></div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Name</th><th>Bio Summary</th><th>KYC Status</th></tr></thead>
-            <tbody id="ov-workers-body"></tbody>
-          </table>
-        </div>
+        <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Bio Summary</th><th>KYC Status</th></tr></thead><tbody id="ov-workers-body"></tbody></table></div>
       </div>
 
-      <div class="pg" id="pg-kyc">
-        <div class="section-hd"><h3>KYC Submissions Pending Review</h3></div>
-        <div id="kyc-list"></div>
-      </div>
-
-      <div class="pg" id="pg-workers">
-        <div class="section-hd"><h3>All Workers</h3></div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Name</th><th>Jobs Done</th><th>Rating</th><th>KYC</th><th>Actions</th></tr></thead>
-            <tbody id="workers-body"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="pg" id="pg-customers">
-        <div class="section-hd"><h3>All Customers</h3></div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Name</th><th>Email</th><th>Actions</th></tr></thead>
-            <tbody id="customers-body"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="pg" id="pg-tasks">
-        <div class="section-hd"><h3>All Tasks</h3></div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Service</th><th>Customer</th><th>Description</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="tasks-body"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="pg" id="pg-activity"><div id="notif-list"></div></div>
-      <div class="pg" id="pg-settings">
-        <div class="connect-card">
-          <h3>⚙️ Credentials Update</h3>
-          <button class="cc-btn cc-primary" onclick="saveSettings()">Save Configuration</button>
-        </div>
-      </div>
+      <div class="pg" id="pg-kyc"><div class="section-hd"><h3>KYC Submissions Pending Review</h3></div><div id="kyc-list"></div></div>
+      <div class="pg" id="pg-workers"><div class="section-hd"><h3>All Workers</h3></div><div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Jobs Done</th><th>Rating</th><th>KYC</th><th>Actions</th></tr></thead><tbody id="workers-body"></tbody></table></div></div>
+      <div class="pg" id="pg-customers"><div class="section-hd"><h3>All Customers</h3></div><div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Actions</th></tr></thead><tbody id="customers-body"></tbody></table></div></div>
+      <div class="pg" id="pg-tasks"><div class="section-hd"><h3>All Tasks</h3></div><div class="tbl-wrap"><table><thead><tr><th>Service</th><th>Customer</th><th>Description</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tasks-body"></tbody></table></div></div>
     </div>
   </div>
 </div>
 
-<div id="toast-box"></div>
 <script src="supabase.js"></script>
 
 <script>
-let cache = { jobs: [], workers: [], customers: [], activity: [] };
+let cache = { jobs: [], workers: [], customers: [] };
 
 function getCategoryName(catId) {
   const mapping = { 1: 'House Cleaning', 2: 'Gardening', 3: 'Moving Assistance', 4: 'Handyman', 5: 'Plumbing', 6: 'Delivery', 7: 'Miscellaneous' };
@@ -262,9 +171,11 @@ function renderPage(id) {
 
 async function refreshData() {
   if (!window.supabaseClient) return;
+  
+  // 🌟 FIX: Query worker_profiles joining the matching 'user_id' foreign key mapping relation
   const [jobsRes, workersRes, usersRes] = await Promise.all([
     window.supabaseClient.from('jobs').select('*, users!customer_id(*)'),
-    window.supabaseClient.from('worker_profiles').select('*, users(*)'),
+    window.supabaseClient.from('worker_profiles').select('*, users:user_id(*)'),
     window.supabaseClient.from('users').select('*')
   ]);
 
@@ -273,7 +184,7 @@ async function refreshData() {
   cache.customers = (usersRes.data || []).filter(u => u.role === 'customer');
 
   updateBadges();
-  renderPage('overview');
+  renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
 }
 
 function updateBadges() {
@@ -303,7 +214,7 @@ function renderOverview() {
 
   const recentWorkers = [...cache.workers].reverse().slice(0, 5);
   document.getElementById('ov-workers-body').innerHTML = recentWorkers.map(w => `<tr>
-    <td>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker'}</td>
+    <td>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker Account'}</td>
     <td>${w.bio || ''}</td>
     <td>${kycBadge(w.verified)}</td>
   </tr>`).join('');
@@ -311,22 +222,33 @@ function renderOverview() {
 
 function renderKYC() {
   const pendingList = cache.workers.filter(w => w.verified === false);
-  document.getElementById('kyc-list').innerHTML = pendingList.map(w => `
-    <div style="background:var(--surface); padding:20px; margin-bottom:12px; border-radius:var(--radius);">
-      <h4>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker'}</h4>
-      <p style="margin: 8px 0;">${w.bio || ''}</p>
+  const container = document.getElementById('kyc-list');
+  
+  if(pendingList.length === 0) {
+    container.innerHTML = '<div style="padding: 20px; color: var(--muted);">No registrations pending verification review.</div>';
+    return;
+  }
+
+  container.innerHTML = pendingList.map(w => `
+    <div style="background:var(--surface); padding:20px; margin-bottom:12px; border-radius:var(--radius); border: 1px solid var(--border)">
+      <h4>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker Profile'}</h4>
+      <p style="margin: 8px 0; font-size: 0.85rem; color: var(--muted);">${w.users ? 'Contact: ' + w.users.phone + ' | ' + w.users.email : ''}</p>
+      <p style="margin: 8px 0; font-style: italic;">"${w.bio || ''}"</p>
       <button class="act-btn act-approve" onclick="approveWorker('${w.id}')">Approve &amp; Activate</button>
       <button class="act-btn act-reject" onclick="rejectWorker('${w.id}')">Reject</button>
     </div>`).join('');
 }
 
 async function approveWorker(id) {
+  if(!confirm("Approve worker profile?")) return;
+  // Promotes worker state cleanly inside both profiles and user authentication states
   await window.supabaseClient.from('worker_profiles').update({ verified: true }).eq('id', id);
   await window.supabaseClient.from('users').update({ role: 'worker' }).eq('id', id);
   refreshData();
 }
 
 async function rejectWorker(id) {
+  if(!confirm("Purge worker record application?")) return;
   await window.supabaseClient.from('worker_profiles').delete().eq('id', id);
   await window.supabaseClient.from('users').delete().eq('id', id);
   refreshData();
