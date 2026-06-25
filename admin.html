@@ -48,18 +48,14 @@
     .sc-val   { font-family:'Syne',sans-serif; font-size:1.9rem; font-weight:800; }
     .sc-sub   { font-size:.72rem; color:var(--muted); margin-top:4px; }
 
-    .section-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; flex-wrap:wrap; gap:9px; }
-    .section-hd h3 { font-family:'Syne',sans-serif; font-size:.93rem; font-weight:800; }
-    .tbl-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
-    table { width:100%; border-collapse:collapse; }
-    thead tr { background:var(--surface2); }
-    th { padding:10px 14px; font-size:.69rem; font-weight:700; color:var(--muted); text-align:left; text-transform:uppercase; letter-spacing:.07em; border-bottom:1px solid var(--border); }
-    td { padding:11px 14px; font-size:.8rem; border-bottom:1px solid var(--border); vertical-align:middle; }
-
     .badge { display:inline-flex; align-items:center; gap:3px; padding:3px 9px; border-radius:99px; font-size:.67rem; font-weight:700; }
     .badge-pending  { background:rgba(240,192,64,.15); color:var(--accent); }
     .badge-approved { background:rgba(74,222,128,.15); color:var(--success); }
     .badge-rejected { background:rgba(248,113,113,.15); color:var(--danger); }
+    .act-btn { padding:4px 10px; border-radius:6px; font-size:.72rem; font-weight:600; cursor:pointer; border:none; transition:all .18s; }
+    .act-approve { background:rgba(74,222,128,.15); color:var(--success); border:1px solid rgba(74,222,128,.3); }
+    .act-reject  { background:rgba(248,113,113,.12); color:var(--danger); border:1px solid rgba(248,113,113,.3); }
+    .act-delete  { background:transparent; color:var(--muted); border:1px solid var(--border); }
   </style>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
@@ -145,12 +141,10 @@ function renderPage(id) {
 
 async function refreshData() {
   const statusEl = document.getElementById('sync-status');
-  
-  // 🌟 FIX: Maps precisely to your specific global 'db' variable from your screenshot
-  const client = window.db || window.supabaseClient || window.supabase;
+  const client = window.db || window.supabaseClient || window.supabase || (typeof db !== 'undefined' ? db : null);
   
   if (!client) {
-    statusEl.textContent = '● Client Variable Missing';
+    statusEl.textContent = '● Connection File Missing';
     statusEl.style.color = 'var(--danger)';
     return;
   }
@@ -188,7 +182,7 @@ async function refreshData() {
     const activePg = document.querySelector('.pg.active').id.replace('pg-','');
     renderPage(activePg);
   } catch (err) {
-    statusEl.textContent = '● Connection Error';
+    statusEl.textContent = '● Query Error';
     statusEl.style.color = 'var(--danger)';
     console.error(err);
   }
