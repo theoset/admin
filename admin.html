@@ -17,19 +17,7 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; }
 
-    #login-screen { display:flex; align-items:center; justify-content:center; min-height:100vh; width:100%; background:radial-gradient(ellipse 70% 50% at 50% 40%, #1a1000, var(--bg) 70%); }
-    .login-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:38px 34px; width:100%; max-width:380px; }
-    .login-logo { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--accent); margin-bottom:5px; }
-    .login-sub  { font-size:.78rem; color:var(--muted); margin-bottom:26px; }
-    .lf-group   { margin-bottom:13px; }
-    .lf-group label { display:block; font-size:.74rem; color:var(--muted); margin-bottom:5px; font-weight:500; }
-    .lf-group input { width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; color:var(--text); font-size:.86rem; transition:border .18s; }
-    .lf-group input:focus { outline:none; border-color:var(--accent); }
-    .login-btn { width:100%; padding:12px; background:var(--accent); border:none; border-radius:var(--radius-sm); color:#0a0b0d; font-size:.9rem; font-weight:700; cursor:pointer; font-family:'Syne',sans-serif; transition:all .18s; margin-top:4px; }
-    .login-btn:hover { background:#ffd055; }
-    .login-err { color:var(--danger); font-size:.76rem; margin-top:9px; text-align:center; min-height:18px; }
-
-    #app { display:none; width:100%; min-height:100vh; }
+    #app { display:flex; width:100%; min-height:100vh; }
     .sidebar { width:var(--sidebar); background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100; }
     .sb-logo { padding:22px 20px 14px; border-bottom:1px solid var(--border); }
     .sb-logo-name { font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800; color:var(--accent); }
@@ -76,17 +64,6 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
-
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">Handled</div>
-    <div class="login-sub">Admin Panel · Restricted Access</div>
-    <div class="lf-group"><label>Admin Username</label><input type="text" id="l-user" placeholder="admin" value="admin" /></div>
-    <div class="lf-group"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" value="admin" onkeydown="if(event.key==='Enter')doAdminLogin()" /></div>
-    <button class="login-btn" onclick="doAdminLogin()">Login →</button>
-    <div class="login-err" id="login-err"></div>
-  </div>
-</div>
 
 <div id="app">
   <aside class="sidebar">
@@ -143,11 +120,9 @@ function getCategoryName(catId) {
   return mapping[catId] || 'General Task';
 }
 
-function doAdminLogin() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
+window.addEventListener('DOMContentLoaded', () => {
   refreshData();
-}
+});
 
 function goPage(id, btn) {
   document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
@@ -170,29 +145,30 @@ function renderPage(id) {
 
 async function refreshData() {
   const statusEl = document.getElementById('sync-status');
-  const db = window.supabaseClient || window.supabase;
   
-  if (!db) {
-    statusEl.textContent = '● Disconnected';
+  // 🌟 FIX: Maps precisely to your specific global 'db' variable from your screenshot
+  const client = window.db || window.supabaseClient || window.supabase;
+  
+  if (!client) {
+    statusEl.textContent = '● Client Variable Missing';
     statusEl.style.color = 'var(--danger)';
-    alert("Supabase Client Error: Could not locate 'supabase.js' credentials asset file.");
     return;
   }
 
   try {
     statusEl.textContent = '⟳ Syncing...';
+    statusEl.style.color = 'var(--accent)';
     
     const [jobsRes, workersRes, usersRes] = await Promise.all([
-      db.from('jobs').select('*'),
-      db.from('worker_profiles').select('*'),
-      db.from('users').select('*')
+      client.from('jobs').select('*'),
+      client.from('worker_profiles').select('*'),
+      client.from('users').select('*')
     ]);
 
     const allUsers = usersRes.data || [];
     const rawJobs = jobsRes.data || [];
     const rawWorkers = workersRes.data || [];
 
-    // Filter and map relational sets in Javascript memory
     cache.customers = allUsers.filter(u => u.role === 'customer');
     
     cache.jobs = rawJobs.map(job => {
@@ -209,8 +185,6 @@ async function refreshData() {
     statusEl.style.color = 'var(--success)';
 
     updateBadges();
-    
-    // Auto-refresh whichever sub-panel section layout view is currently active
     const activePg = document.querySelector('.pg.active').id.replace('pg-','');
     renderPage(activePg);
   } catch (err) {
@@ -278,17 +252,17 @@ function renderKYC() {
 
 async function approveWorker(id) {
   if(!confirm("Approve worker profile?")) return;
-  const db = window.supabaseClient || window.supabase;
-  await db.from('worker_profiles').update({ verified: true }).eq('id', id);
-  await db.from('users').update({ role: 'worker' }).eq('id', id);
+  const client = window.db || window.supabaseClient || window.supabase;
+  await client.from('worker_profiles').update({ verified: true }).eq('id', id);
+  await client.from('users').update({ role: 'worker' }).eq('id', id);
   refreshData();
 }
 
 async function rejectWorker(id) {
   if(!confirm("Purge worker record application?")) return;
-  const db = window.supabaseClient || window.supabase;
-  await db.from('worker_profiles').delete().eq('id', id);
-  await db.from('users').delete().eq('id', id);
+  const client = window.db || window.supabaseClient || window.supabase;
+  await client.from('worker_profiles').delete().eq('id', id);
+  await client.from('users').delete().eq('id', id);
   refreshData();
 }
 
@@ -309,7 +283,7 @@ function renderCustomers() {
     ? cache.customers.map(c => `<tr>
         <td>${c.first_name} ${c.last_name}</td>
         <td>${c.email}</td>
-        <td><button class="act-btn act-delete" onclick="const db = window.supabaseClient || window.supabase; db.from('users').delete().eq('id','${c.id}'); refreshData();">Delete</button></td>
+        <td><button class="act-btn act-delete" onclick="const client = window.db || window.supabaseClient || window.supabase; client.from('users').delete().eq('id','${c.id}'); refreshData();">Delete</button></td>
       </tr>`).join('')
     : '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--muted)">No customers registered.</td></tr>';
 }
@@ -322,7 +296,7 @@ function renderTasks() {
         <td>${r.description || ''}</td>
         <td>P${r.price}</td>
         <td>${r.status}</td>
-        <td><button class="act-btn act-delete" onclick="const db = window.supabaseClient || window.supabase; db.from('jobs').delete().eq('id', ${r.id}); refreshData();">Delete</button></td>
+        <td><button class="act-btn act-delete" onclick="const client = window.db || window.supabaseClient || window.supabase; client.from('jobs').delete().eq('id', ${r.id}); refreshData();">Delete</button></td>
       </tr>`).join('')
     : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">No tasks created.</td></tr>';
 }
