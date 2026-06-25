@@ -81,8 +81,8 @@
   <div class="login-box">
     <div class="login-logo">Handled</div>
     <div class="login-sub">Admin Panel · Restricted Access</div>
-    <div class="lf-group"><label>Admin Username</label><input type="text" id="l-user" placeholder="admin" /></div>
-    <div class="lf-group"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()" /></div>
+    <div class="lf-group"><label>Admin Username</label><input type="text" id="l-user" placeholder="admin" value="admin" /></div>
+    <div class="lf-group"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" value="admin" onkeydown="if(event.key==='Enter')doAdminLogin()" /></div>
     <button class="login-btn" onclick="doAdminLogin()">Login →</button>
     <div class="login-err" id="login-err"></div>
   </div>
@@ -104,7 +104,7 @@
 
   <div class="main">
     <div class="topbar">
-      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-title" id="topbar-title">OVERVIEW</div>
       <div class="topbar-actions">
         <button class="tb-btn tb-btn-ghost" onclick="refreshData()">↻ Refresh</button>
         <span id="sync-status" style="font-size:.72rem;color:var(--accent)">● Connecting...</span>
@@ -133,7 +133,7 @@
   </div>
 </div>
 
-<script id="sb-script" src="supabase.js"></script>
+<script src="supabase.js"></script>
 
 <script>
 let cache = { jobs: [], workers: [], customers: [] };
@@ -152,6 +152,11 @@ function doAdminLogin() {
 function goPage(id, btn) {
   document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
   document.getElementById('pg-'+id).classList.add('active');
+  document.getElementById('topbar-title').textContent = id.toUpperCase();
+  
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  
   renderPage(id);
 }
 
@@ -168,32 +173,26 @@ async function refreshData() {
   const db = window.supabaseClient || window.supabase;
   
   if (!db) {
-    statusEl.textContent = '● Config Missing';
+    statusEl.textContent = '● Disconnected';
     statusEl.style.color = 'var(--danger)';
-    alert("CRITICAL CONNECTION FAILURE:\nCould not read your 'supabase.js' initialization file.\nMake sure the file named exactly 'supabase.js' is stored in the same folder as this 'admin.html' page.");
+    alert("Supabase Client Error: Could not locate 'supabase.js' credentials asset file.");
     return;
   }
 
   try {
-    statusEl.textContent = '⟳ Fetching...';
+    statusEl.textContent = '⟳ Syncing...';
     
-    // Flatten selects completely to ensure it never crashes on inner join constraint mismatches
     const [jobsRes, workersRes, usersRes] = await Promise.all([
       db.from('jobs').select('*'),
       db.from('worker_profiles').select('*'),
       db.from('users').select('*')
     ]);
 
-    // Handle potential query execution errors gracefully
-    if (jobsRes.error) { alert("Jobs Query Failed: " + jobsRes.error.message); return; }
-    if (workersRes.error) { alert("Worker Profiles Query Failed: " + workersRes.error.message); return; }
-    if (usersRes.error) { alert("Users Query Failed: " + usersRes.error.message); return; }
-
     const allUsers = usersRes.data || [];
     const rawJobs = jobsRes.data || [];
     const rawWorkers = workersRes.data || [];
 
-    // Memory structural matching
+    // Filter and map relational sets in Javascript memory
     cache.customers = allUsers.filter(u => u.role === 'customer');
     
     cache.jobs = rawJobs.map(job => {
@@ -202,7 +201,6 @@ async function refreshData() {
     });
 
     cache.workers = rawWorkers.map(worker => {
-      // Handles any permutation of schema primary configurations cleanly
       worker.users = allUsers.find(u => u.id === worker.user_id || u.id === worker.id);
       return worker;
     });
@@ -211,11 +209,14 @@ async function refreshData() {
     statusEl.style.color = 'var(--success)';
 
     updateBadges();
-    renderPage('overview');
+    
+    // Auto-refresh whichever sub-panel section layout view is currently active
+    const activePg = document.querySelector('.pg.active').id.replace('pg-','');
+    renderPage(activePg);
   } catch (err) {
-    statusEl.textContent = '● System Crash';
+    statusEl.textContent = '● Connection Error';
     statusEl.style.color = 'var(--danger)';
-    alert("CRITICAL REFRESH EXCEPTION:\n" + err.message);
+    console.error(err);
   }
 }
 
@@ -236,20 +237,24 @@ function renderOverview() {
   document.getElementById('st-kyc').textContent = cache.workers.filter(w => !w.verified).length;
 
   const recentTasks = [...cache.jobs].reverse().slice(0, 5);
-  document.getElementById('ov-tasks-body').innerHTML = recentTasks.map(r => `<tr>
-    <td>${getCategoryName(r.category_id)}</td>
-    <td>${r.users ? r.users.first_name : 'Customer'}</td>
-    <td>${r.description || ''}</td>
-    <td>P${r.price}</td>
-    <td>${r.status}</td>
-  </tr>`).join('');
+  document.getElementById('ov-tasks-body').innerHTML = recentTasks.length 
+    ? recentTasks.map(r => `<tr>
+        <td>${getCategoryName(r.category_id)}</td>
+        <td>${r.users ? r.users.first_name : 'Customer'}</td>
+        <td>${r.description || ''}</td>
+        <td>P${r.price}</td>
+        <td>${r.status}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted)">No tasks found yet.</td></tr>';
 
   const recentWorkers = [...cache.workers].reverse().slice(0, 5);
-  document.getElementById('ov-workers-body').innerHTML = recentWorkers.map(w => `<tr>
-    <td>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker Account'}</td>
-    <td>${w.bio || ''}</td>
-    <td>${kycBadge(w.verified)}</td>
-  </tr>`).join('');
+  document.getElementById('ov-workers-body').innerHTML = recentWorkers.length
+    ? recentWorkers.map(w => `<tr>
+        <td>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker Account'}</td>
+        <td>${w.bio || ''}</td>
+        <td>${kycBadge(w.verified)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--muted)">No worker registrations yet.</td></tr>';
 }
 
 function renderKYC() {
@@ -288,32 +293,38 @@ async function rejectWorker(id) {
 }
 
 function renderWorkers() {
-  document.getElementById('workers-body').innerHTML = cache.workers.map(w => `<tr>
-    <td>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker'}</td>
-    <td>${w.completed_jobs || 0}</td>
-    <td>${w.rating || 5}★</td>
-    <td>${kycBadge(w.verified)}</td>
-    <td><button class="act-btn act-delete" onclick="rejectWorker('${w.id}')">Delete</button></td>
-  </tr>`).join('');
+  document.getElementById('workers-body').innerHTML = cache.workers.length
+    ? cache.workers.map(w => `<tr>
+        <td>${w.users ? w.users.first_name + ' ' + w.users.last_name : 'Worker'}</td>
+        <td>${w.completed_jobs || 0}</td>
+        <td>${w.rating || 5}★</td>
+        <td>${kycBadge(w.verified)}</td>
+        <td><button class="act-btn act-delete" onclick="rejectWorker('${w.id}')">Delete</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted)">No workers registered.</td></tr>';
 }
 
 function renderCustomers() {
-  document.getElementById('customers-body').innerHTML = cache.customers.map(c => `<tr>
-    <td>${c.first_name} ${c.last_name}</td>
-    <td>${c.email}</td>
-    <td><button class="act-btn act-delete" onclick="const db = window.supabaseClient || window.supabase; db.from('users').delete().eq('id','${c.id}'); refreshData();">Delete</button></td>
-  </tr>`).join('');
+  document.getElementById('customers-body').innerHTML = cache.customers.length
+    ? cache.customers.map(c => `<tr>
+        <td>${c.first_name} ${c.last_name}</td>
+        <td>${c.email}</td>
+        <td><button class="act-btn act-delete" onclick="const db = window.supabaseClient || window.supabase; db.from('users').delete().eq('id','${c.id}'); refreshData();">Delete</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--muted)">No customers registered.</td></tr>';
 }
 
 function renderTasks() {
-  document.getElementById('tasks-body').innerHTML = cache.jobs.map(r => `<tr>
-    <td>${getCategoryName(r.category_id)}</td>
-    <td>${r.users ? r.users.first_name : 'Customer'}</td>
-    <td>${r.description || ''}</td>
-    <td>P${r.price}</td>
-    <td>${r.status}</td>
-    <td><button class="act-btn act-delete" onclick="const db = window.supabaseClient || window.supabase; db.from('jobs').delete().eq('id', ${r.id}); refreshData();">Delete</button></td>
-  </tr>`).join('');
+  document.getElementById('tasks-body').innerHTML = cache.jobs.length
+    ? cache.jobs.map(r => `<tr>
+        <td>${getCategoryName(r.category_id)}</td>
+        <td>${r.users ? r.users.first_name : 'Customer'}</td>
+        <td>${r.description || ''}</td>
+        <td>P${r.price}</td>
+        <td>${r.status}</td>
+        <td><button class="act-btn act-delete" onclick="const db = window.supabaseClient || window.supabase; db.from('jobs').delete().eq('id', ${r.id}); refreshData();">Delete</button></td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">No tasks created.</td></tr>';
 }
 </script>
 </body>
