@@ -72,11 +72,6 @@
     .badge-pending  { background:rgba(240,192,64,.15); color:var(--accent); }
     .badge-approved { background:rgba(74,222,128,.15); color:var(--success); }
     .badge-rejected { background:rgba(248,113,113,.15); color:var(--danger); }
-
-    .act-btn { padding:4px 10px; border-radius:6px; font-size:.72rem; font-weight:600; cursor:pointer; border:none; transition:all .18s; }
-    .act-approve { background:rgba(74,222,128,.15); color:var(--success); border:1px solid rgba(74,222,128,.3); }
-    .act-reject  { background:rgba(248,113,113,.12); color:var(--danger); border:1px solid rgba(248,113,113,.3); }
-    .act-delete  { background:transparent; color:var(--muted); border:1px solid var(--border); }
   </style>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
@@ -112,7 +107,7 @@
       <div class="topbar-title" id="topbar-title">Overview</div>
       <div class="topbar-actions">
         <button class="tb-btn tb-btn-ghost" onclick="refreshData()">↻ Refresh</button>
-        <span id="sync-status" style="font-size:.72rem;color:var(--accent)">● Syncing...</span>
+        <span id="sync-status" style="font-size:.72rem;color:var(--accent)">● Connecting...</span>
       </div>
     </div>
 
@@ -173,22 +168,36 @@ async function refreshData() {
   const db = window.supabaseClient || window.supabase;
   
   if (!db) {
-    statusEl.textContent = '● Configuration File Missing';
+    statusEl.textContent = '● Config Missing';
     statusEl.style.color = 'var(--danger)';
     return;
   }
 
   try {
-    // 🌟 QUERY FIX: Tells Supabase to find foreign keys via explicit user_id columns mapping
+    // Fetch base tables completely flat to bypass any inner join constraints
     const [jobsRes, workersRes, usersRes] = await Promise.all([
-      db.from('jobs').select('*, users!customer_id(*)'),
-      db.from('worker_profiles').select('*, users!user_id(*)'),
+      db.from('jobs').select('*'),
+      db.from('worker_profiles').select('*'),
       db.from('users').select('*')
     ]);
 
-    cache.jobs = jobsRes.data || [];
-    cache.workers = workersRes.data || [];
-    cache.customers = (usersRes.data || []).filter(u => u.role === 'customer');
+    const allUsers = usersRes.data || [];
+    const rawJobs = jobsRes.data || [];
+    const rawWorkers = workersRes.data || [];
+
+    // Map fields cleanly in JavaScript logic memory 
+    cache.customers = allUsers.filter(u => u.role === 'customer');
+    
+    cache.jobs = rawJobs.map(job => {
+      job.users = allUsers.find(u => u.id === job.customer_id);
+      return job;
+    });
+
+    cache.workers = rawWorkers.map(worker => {
+      // Look up parent table data by matching user_id parameters safely
+      worker.users = allUsers.find(u => u.id === worker.user_id || u.id === worker.id);
+      return worker;
+    });
 
     statusEl.textContent = '● Supabase Live';
     statusEl.style.color = 'var(--success)';
@@ -196,7 +205,7 @@ async function refreshData() {
     updateBadges();
     renderPage(document.querySelector('.pg.active').id.replace('pg-',''));
   } catch (err) {
-    statusEl.textContent = '● Query Connection Error';
+    statusEl.textContent = '● Query Error';
     statusEl.style.color = 'var(--danger)';
     console.error(err);
   }
